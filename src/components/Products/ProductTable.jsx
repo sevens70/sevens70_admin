@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllProducts } from "../redux/product/productAPI";
-import { selectAllProducts } from "../redux/product/productSlice";
+import { fetchCategoriesAsync, selectAllProducts } from "../redux/product/productSlice";
 import { checkAuth } from "../redux/auth/authAPI";
 
 const ProductTable = () => {
@@ -17,10 +17,10 @@ const ProductTable = () => {
   useEffect(() => {
     dispatch(fetchAllProducts);
   }, [dispatch]);
-  // useEffect(() => {
-  //   dispatch(checkAuth());
-  //   dispatch(fetchCategoriesAsync());
-  // }, []);
+  useEffect(() => {
+    dispatch(checkAuth);
+    dispatch(fetchCategoriesAsync);
+  }, []);
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="flex justify-between px-4 py-6 md:px-6 xl:px-7.5">

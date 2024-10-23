@@ -8,6 +8,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^2.1.10",
+    "@heroicons/react": "^2.1.5",
     "@reduxjs/toolkit": "^1.9.5",
     "apexcharts": "^3.45.2",
     "flatpickr": "^4.6.13",

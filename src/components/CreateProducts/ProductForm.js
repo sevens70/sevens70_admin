@@ -2,7 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 // import { useParams } from "react-router-dom";
 // import { useEffect, useState } from "react";
-// import Modal from "../../common/Modal";
+// import Modal from "../common/ModalFile/Modal";
+import SubcategoryModal from "../common/ModalFile/SubcategoryModal.js";
 // import { useAlert } from "react-alert";
 import {
   clearSelectedProduct,
@@ -31,6 +32,7 @@ function ProductForm() {
   const params = useParams();
   const selectedProduct = useSelector(selectProductById);
   const [openModal, setOpenModal] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("");
   // const alert = useAlert();
 
   const colors = [
@@ -106,13 +108,34 @@ function ProductForm() {
     product.deleted = true;
     dispatch(updateProductAsync(product));
   };
-
+  const handleSave = () => {
+    // const product = { ...selectedProduct };
+    // product.deleted = true;
+    // dispatch(updateProductAsync(product));
+  };
   return (
     <>
       <form
         noValidate
         onSubmit={handleSubmit((data) => {
-          console.log(data);
+          console.log("data for product 1234 data", data);
+          // const product =     {
+          //   "title": "OPPOF19122337",
+          //   "description": "OPPO F19 is officially announced on April 2021.",
+          //   "price": 300,
+          //   "discountPercentage": 17.91,
+          //   "rating": 0,
+          //   "stock": 123,
+          //   "brand": "OPPO",
+          //   "category": "smartphones",
+          //   "thumbnail": "https://i.dummyjson.com/data/products/4/thumbnail.jpg",
+          //   "images": [
+          //     "https://i.dummyjson.com/data/products/4/1.jpg",
+          //     "https://i.dummyjson.com/data/products/4/2.jpg",
+          //     "https://i.dummyjson.com/data/products/4/3.jpg",
+          //     "https://i.dummyjson.com/data/products/4/thumbnail.jpg"
+          //   ]
+          // }
           const product = { ...data };
           product.images = [
             product.image1,
@@ -187,9 +210,13 @@ function ProductForm() {
                         required: "name is required",
                       })}
                       id="title"
-                      className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
+                      // className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
+                      className="w-full rounded-lg border-0 border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>
+                  {errors.title && (
+                    <p className="text-red">{errors.title.message}</p>
+                  )}
                 </div>
               </div>
 
@@ -207,16 +234,19 @@ function ProductForm() {
                       required: "description is required",
                     })}
                     rows={3}
-                    className="text-gray-900 ring-gray-300 placeholder:text-gray-400 block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="ing-gray-300 w-full rounded-lg bg-transparent py-4 pl-6 pr-10 text-black outline-none ring-1 ring-inset focus:border-primary focus:ring-2 focus:ring-inset focus:ring-indigo-600 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     defaultValue={""}
                   />
                 </div>
                 <p className="text-gray-600 mt-3 text-sm leading-6">
                   Write a few sentences about product.
                 </p>
+                {errors.email && (
+                  <p className="text-gray-600">{errors.description.message}</p>
+                )}
               </div>
 
-              <div className="col-span-full">
+              {/* <div className="col-span-full">
                 <label
                   htmlFor="brand"
                   className="text-gray-900 block text-sm font-medium leading-6"
@@ -237,7 +267,7 @@ function ProductForm() {
                     ))}
                   </select>
                 </div>
-              </div>
+              </div> */}
 
               <div className="col-span-full">
                 <label
@@ -290,20 +320,185 @@ function ProductForm() {
                 >
                   Category
                 </label>
-                <div className="mt-2">
+                <div className="relative z-20 bg-transparent dark:bg-form-input">
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => {
+                      setSelectedCategory(e.target.value);
+                      changeTextColor();
+                    }}
+                    {...register("category", {
+                      required: "category is required",
+                    })}
+                    // className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
+                    //   isOptionSelected ? "text-black dark:text-white" : ""
+                    // }`}
+                    className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary`}
+                  >
+                    <option
+                      value=""
+                      disabled
+                      className="text-body dark:text-bodydark"
+                    >
+                      Select your subject
+                    </option>
+                    <option
+                      value="USA"
+                      className="text-body dark:text-bodydark"
+                    >
+                      USA
+                    </option>
+                    <option value="UK" className="text-body dark:text-bodydark">
+                      UK
+                    </option>
+                    <option
+                      value="Canada"
+                      className="text-body dark:text-bodydark"
+                    >
+                      Canada
+                    </option>
+                  </select>
+
+                  <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2">
+                    <svg
+                      className="fill-current"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g opacity="0.8">
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
+                          fill=""
+                        ></path>
+                      </g>
+                    </svg>
+                  </span>
+                </div>
+                {/* <div className="mt-2">
                   <select
                     {...register("category", {
                       required: "category is required",
                     })}
                   >
                     <option value="">--choose category--</option>
-                    {categories?.map((category) => (
+                    {colors?.map((category) => (
                       <option key={category.value} value={category.value}>
                         {category.label}
                       </option>
                     ))}
                   </select>
+                  {errors.category && (
+                    <p className="text-red">{errors.category.message}</p>
+                  )}
+                </div> */}
+              </div>
+              <div className="col-span-full">
+                <label
+                  htmlFor="subcategory"
+                  className="text-gray-900 block text-sm font-medium leading-6"
+                >
+                  Create Sub Category
+                </label>
+
+                <button
+                  disabled={selectedCategory?.length > 0 ? false : true}
+                  onClick={(e) => {
+                    // e.preventDefault();
+                    setOpenModal(true);
+                  }}
+                  className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
+                >
+                  Create Sub-category
+                </button>
+              </div>
+              <div className="col-span-full">
+                <label
+                  htmlFor="subcategory"
+                  className="text-gray-900 block text-sm font-medium leading-6"
+                >
+                  Sub Category
+                </label>
+                <div className="relative z-20 bg-transparent dark:bg-form-input">
+                  <select
+                    // value={selectedOption}
+                    // onChange={(e) => {
+                    //   setSelectedOption(e.target.value);
+                    //   changeTextColor();
+                    // }}
+                    {...register("category", {
+                      required: "category is required",
+                    })}
+                    // className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
+                    //   isOptionSelected ? "text-black dark:text-white" : ""
+                    // }`}
+                    className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary`}
+                  >
+                    <option
+                      value=""
+                      disabled
+                      className="text-body dark:text-bodydark"
+                    >
+                      Select your subject
+                    </option>
+                    <option
+                      value="USA"
+                      className="text-body dark:text-bodydark"
+                    >
+                      USA
+                    </option>
+                    <option value="UK" className="text-body dark:text-bodydark">
+                      UK
+                    </option>
+                    <option
+                      value="Canada"
+                      className="text-body dark:text-bodydark"
+                    >
+                      Canada
+                    </option>
+                  </select>
+
+                  <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2">
+                    <svg
+                      className="fill-current"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g opacity="0.8">
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
+                          fill=""
+                        ></path>
+                      </g>
+                    </svg>
+                  </span>
                 </div>
+                {/* <div className="mt-2">
+                  <select
+                    {...register("category", {
+                      required: "category is required",
+                    })}
+                  >
+                    <option value="">--choose category--</option>
+                    {colors?.map((category) => (
+                      <option key={category.value} value={category.value}>
+                        {category.label}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.category && (
+                    <p className="text-red">{errors.category.message}</p>
+                  )}
+                </div> */}
               </div>
 
               <div className="sm:col-span-2">
@@ -323,9 +518,13 @@ function ProductForm() {
                         max: 10000,
                       })}
                       id="price"
-                      className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
+                      // className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
+                      className="w-full rounded-lg border-0 border-stroke bg-transparent py-2 pl-6 pr-2 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>
+                  {errors.price && (
+                    <p className="text-red">{errors.price.message}</p>
+                  )}
                 </div>
               </div>
 
@@ -346,9 +545,14 @@ function ProductForm() {
                         max: 100,
                       })}
                       id="discountPercentage"
-                      className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
+                      className="w-full rounded-lg border-0 border-stroke bg-transparent py-2 pl-6 pr-2 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>
+                  {errors.discountPercentage && (
+                    <p className="text-red">
+                      {errors.discountPercentage.message}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -368,9 +572,12 @@ function ProductForm() {
                         min: 0,
                       })}
                       id="stock"
-                      className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
+                      className="w-full rounded-lg border-0 border-stroke bg-transparent py-2 pl-6 pr-2 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>
+                  {errors.stock && (
+                    <p className="text-red">{errors.stock.message}</p>
+                  )}
                 </div>
               </div>
 
@@ -389,9 +596,12 @@ function ProductForm() {
                         required: "thumbnail is required",
                       })}
                       id="thumbnail"
-                      className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
+                      className="w-full rounded-lg border-0 border-stroke bg-transparent py-2 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>
+                  {errors.thumbnail && (
+                    <p className="text-red">{errors.thumbnail.message}</p>
+                  )}
                 </div>
               </div>
 
@@ -410,9 +620,12 @@ function ProductForm() {
                         required: "image1 is required",
                       })}
                       id="image1"
-                      className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
+                      className="w-full rounded-lg border-0 border-stroke bg-transparent py-2 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>
+                  {errors.image1 && (
+                    <p className="text-red">{errors.image1.message}</p>
+                  )}
                 </div>
               </div>
 
@@ -431,9 +644,12 @@ function ProductForm() {
                         required: "image is required",
                       })}
                       id="image2"
-                      className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
+                      className="w-full rounded-lg border-0 border-stroke bg-transparent py-2 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>
+                  {errors.image2 && (
+                    <p className="text-red">{errors.image2.message}</p>
+                  )}
                 </div>
               </div>
 
@@ -452,82 +668,12 @@ function ProductForm() {
                         required: "image is required",
                       })}
                       id="image3"
-                      className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
+                      className="w-full rounded-lg border-0 border-stroke bg-transparent py-2 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>
-                </div>
-              </div>
-
-              <div className="sm:col-span-6">
-                <label
-                  htmlFor="highlight1"
-                  className="text-gray-900 block text-sm font-medium leading-6"
-                >
-                  Highlight 1
-                </label>
-                <div className="mt-2">
-                  <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
-                    <input
-                      type="text"
-                      {...register("highlight1", {})}
-                      id="highlight1"
-                      className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="sm:col-span-6">
-                <label
-                  htmlFor="highlight2"
-                  className="text-gray-900 block text-sm font-medium leading-6"
-                >
-                  Highlight 2
-                </label>
-                <div className="mt-2">
-                  <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
-                    <input
-                      type="text"
-                      {...register("highlight2", {})}
-                      id="highlight2"
-                      className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="sm:col-span-6">
-                <label
-                  htmlFor="highlight3"
-                  className="text-gray-900 block text-sm font-medium leading-6"
-                >
-                  Highlight 3
-                </label>
-                <div className="mt-2">
-                  <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
-                    <input
-                      type="text"
-                      {...register("highlight3", {})}
-                      id="highlight3"
-                      className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="sm:col-span-6">
-                <label
-                  htmlFor="highlight4"
-                  className="text-gray-900 block text-sm font-medium leading-6"
-                >
-                  Highlight 4
-                </label>
-                <div className="mt-2">
-                  <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
-                    <input
-                      type="text"
-                      {...register("highlight4", {})}
-                      id="highlight4"
-                      className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
-                    />
-                  </div>
+                  {errors.image3 && (
+                    <p className="text-red">{errors.image3.message}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -566,16 +712,18 @@ function ProductForm() {
           </button>
         </div>
       </form>
-      {selectedProduct && (
-        <Modal
-          title={`Delete ${selectedProduct.title}`}
-          message="Are you sure you want to delete this Product ?"
-          dangerOption="Delete"
+      {selectedCategory && (
+        <SubcategoryModal
+          title={`Create sub category for ${category}`}
+          message=""
+          dangerOption=""
+          saveOption="Save"
           cancelOption="Cancel"
           dangerAction={handleDelete}
+          saveAction={handleSave}
           cancelAction={() => setOpenModal(null)}
           showModal={openModal}
-        ></Modal>
+        ></SubcategoryModal>
       )}
     </>
   );
