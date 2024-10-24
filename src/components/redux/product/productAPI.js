@@ -15,6 +15,13 @@ export function fetchAllProducts() {
     resolve({ data: { products: data } });
   });
 }
+export function fetchAllCategories() {
+  return new Promise(async (resolve) => {
+    const response = await fetch(`${BASE_URL}/categories`);
+    const data = await response.json();
+    resolve({ data: { categories: data } });
+  });
+}
 
 export function createProduct(product) {
   return new Promise(async (resolve) => {

@@ -8,12 +8,13 @@ import {
   createProduct,
   updateProduct,
   createSubCategories,
+  fetchAllCategories,
 } from "./productAPI";
-
+import toast from "react-hot-toast";
 const initialState = {
   products: [],
-  brands: [],
   categories: [],
+  brands: [],
   status: "idle",
   totalItems: 0,
   selectedProduct: null,
@@ -34,7 +35,18 @@ export const fetchAllProductByAsinc = createAsyncThunk(
     return response.data;
   },
 );
-
+export const fetchCategoriesAsync = createAsyncThunk(
+  "product/fetchCategories",
+  async () => {
+    try {
+      const response = await fetchCategories();
+      return response.data;
+    } catch (error) {
+      console.error("API error:", error);
+      throw error;
+    }
+  },
+);
 export const fetchProductsByFiltersAsync = createAsyncThunk(
   "product/fetchProductsByFilters",
   async ({ filter, sort, pagination, admin }) => {
@@ -57,18 +69,16 @@ export const fetchBrandsAsync = createAsyncThunk(
     return response.data;
   },
 );
-export const fetchCategoriesAsync = createAsyncThunk(
-  "product/fetchCategories",
-  async () => {
-    const response = await fetchCategories();
-    // The value we return becomes the `fulfilled` action payload
-    return response.data;
-  },
-);
+
 export const createSubCategoriesAsync = createAsyncThunk(
   "product/createSubCategories",
   async (payload) => {
     const response = await createSubCategories(payload);
+    if (response.message === "Server error" || response.message === "Subcategory already exists") {
+      toast.error(response.message);
+    } else {
+      toast.success(response.message);
+    }
     return response.data;
   },
 );
@@ -119,8 +129,13 @@ export const productSlice = createSlice({
       })
       .addCase(fetchCategoriesAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.categories.push(action.payload);
+        state.categories = action.payload;
       })
+      .addCase(fetchCategoriesAsync.rejected, (state, action) => {
+        state.status = "failed";
+        console.error("Error fetching categories:", action.error.message);
+      })
+
       .addCase(createSubCategoriesAsync.pending, (state) => {
         state.status = "loading";
       })
@@ -166,8 +181,9 @@ export const productSlice = createSlice({
 export const { clearSelectedProduct } = productSlice.actions;
 
 export const selectAllProducts = (state) => state.product?.products;
+export const selectAllCategories = (state) => state.product?.categories;
 export const selectBrands = (state) => state.product?.brands;
-export const selectCategories = (state) => state.product?.categories;
+// export const selectCategories = (state) => state.product?.categories;
 export const selectProductById = (state) => state.product?.selectedProduct;
 export const selectProductListStatus = (state) => state.product?.status;
 

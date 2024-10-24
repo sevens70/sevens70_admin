@@ -4,16 +4,16 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllProducts } from "../redux/product/productAPI";
-import { fetchCategoriesAsync, selectAllProducts } from "../redux/product/productSlice";
+import { fetchCategoriesAsync, selectAllCategories, selectAllProducts } from "../redux/product/productSlice";
 import { checkAuth } from "../redux/auth/authAPI";
 
 const ProductTable = () => {
   const dispatch = useDispatch();
   const products = useSelector(selectAllProducts);
+  const allCategories = useSelector(selectAllCategories);
   // const brands = useSelector(selectBrands);
   // const categories = useSelector(selectCategories);
   // const totalItems = useSelector(selectTotalItems);
-  console.log("1234 product", products);
   useEffect(() => {
     dispatch(fetchAllProducts);
   }, [dispatch]);

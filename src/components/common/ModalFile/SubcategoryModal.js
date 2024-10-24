@@ -12,7 +12,7 @@ export default function SubCategoryModal({
   saveAction,
   cancelAction,
   showModal,
-  setSubcategoriesData,
+  setCreateSubCategory,
 }) {
   const [open, setOpen] = useState(false);
 
@@ -30,6 +30,7 @@ export default function SubCategoryModal({
 
   const handleClose = () => {
     setOpen(false);
+    cancelAction();
   };
 
   useEffect(() => {
@@ -41,12 +42,13 @@ export default function SubCategoryModal({
   }, [showModal]);
 
   return (
-    <Transition.Root show={open} as={Fragment}>
+    <Transition.Root appear show={open} as={Fragment}>
       <Dialog
         as="div"
         className="relative z-999"
         initialFocus={cancelButtonRef}
         onClose={handleClose}
+        backdrop={true}
       >
         <Transition.Child
           as={Fragment}
@@ -93,7 +95,7 @@ export default function SubCategoryModal({
                           <input
                             type="text"
                             onChange={(e) => {
-                              setSubcategoriesData(e.target.value);
+                              setCreateSubCategory(e.target.value);
                             }}
                             className="w-full rounded-lg border-0 border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                           />

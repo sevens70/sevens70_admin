@@ -1,23 +1,20 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-// import { useParams } from "react-router-dom";
-// import { useEffect, useState } from "react";
-// import Modal from "../common/ModalFile/Modal";
 import SubcategoryModal from "../common/ModalFile/SubcategoryModal.js";
-// import { useAlert } from "react-alert";
 import {
   clearSelectedProduct,
   createProductAsync,
   createSubCategoriesAsync,
+  fetchCategoriesAsync,
   fetchProductByIdAsync,
+  selectAllCategories,
   selectBrands,
-  selectCategories,
   selectProductById,
   updateProductAsync,
 } from "../redux/product/productSlice";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-// import { useAlert } from "react-alert";
+import { fetchCategories } from "../redux/product/productAPI.js";
 
 function ProductForm() {
   const {
@@ -27,12 +24,21 @@ function ProductForm() {
     reset,
     formState: { errors },
   } = useForm();
-  const brands = useSelector(selectBrands);
-  const categories = useSelector(selectCategories);
+  // const brands = useSelector(selectBrands);
+  const brands = [
+    "Abc Fashion",
+    "squire style",
+    "Nice fashion",
+    "xozo fashion",
+    "style zone",
+    "Cool style",
+    "Modern look",
+  ];
   const dispatch = useDispatch();
   const params = useParams();
   const selectedProduct = useSelector(selectProductById);
-  const [openModal, setOpenModal] = useState(null);
+  const productState = useSelector((state) => state.product);
+  const [openModal, setOpenModal] = useState(false);
   // const [selectedCategory, setSelectedCategory] = useState("");
   const [categoriesData, setCategoriesData] = useState([
     "Home",
@@ -41,8 +47,12 @@ function ProductForm() {
     "Accessories",
     "Shop",
   ]);
+  const [createSubCategory, setCreateSubCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubCategory, setSelectedSubCategory] = useState("");
   const [subcategoriesData, setSubcategoriesData] = useState([]);
+  const [allCategoriesData, setAllcategoriesData] = useState([]);
+
   // const alert = useAlert();
 
   const colors = [
@@ -76,6 +86,13 @@ function ProductForm() {
     { name: "2XL", inStock: true, id: "2xl" },
     { name: "3XL", inStock: true, id: "3xl" },
   ];
+  const tags = [
+    { name: "bags", inStock: true, id: "bags" },
+    { name: "ladies", inStock: true, id: "ladies bag" },
+    { name: "fashion", inStock: true, id: "fashion" },
+    { name: "shoes", inStock: true, id: "shoes" },
+    { name: "cosmetics", inStock: true, id: "cosmetics" },
+  ];
 
   useEffect(() => {
     if (params.id) {
@@ -92,6 +109,7 @@ function ProductForm() {
       setValue("price", selectedProduct.price);
       setValue("discountPercentage", selectedProduct.discountPercentage);
       setValue("thumbnail", selectedProduct.thumbnail);
+      setValue("model", selectedProduct.model);
       setValue("stock", selectedProduct.stock);
       setValue("image1", selectedProduct.images[0]);
       setValue("image2", selectedProduct.images[1]);
@@ -107,11 +125,50 @@ function ProductForm() {
         selectedProduct.sizes.map((size) => size.id),
       );
       setValue(
+        "tags",
+        selectedProduct.tags.map((tag) => tag.id),
+      );
+      setValue(
         "colors",
         selectedProduct.colors.map((color) => color.id),
       );
     }
   }, [selectedProduct, params.id, setValue]);
+  // useEffect(()=>{
+  //   // dispatch(fetchAllCategoriesByAsinc());
+  //   // dispatch(fetchCategoriesAsync());
+  //   const allCategoriesData = fetchCategoriesAsync()
+  //   console.log("allCategories", allCategories)
+  // },[dispatch])
+  const fetchSubCategoriesData = async () => {
+    try {
+      const response = await fetchCategories();
+      setAllcategoriesData(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+  useEffect(() => {
+    fetchSubCategoriesData();
+  }, [openModal]);
+
+  useEffect(() => {
+    if (selectedCategory) {
+      const selectedCategoryData = allCategoriesData.find(
+        (category) =>
+          category.name.toLowerCase() === selectedCategory.toLowerCase(),
+      );
+
+      if (selectedCategoryData) {
+        const subcategoryNames = selectedCategoryData.subcategories.map(
+          (sub) => sub.name,
+        );
+        setSubcategoriesData(subcategoryNames);
+      } else {
+        setSubcategoriesData([]);
+      }
+    }
+  }, [selectedCategory, allCategoriesData]);
 
   const handleDelete = () => {
     const product = { ...selectedProduct };
@@ -120,27 +177,18 @@ function ProductForm() {
   };
   const handleSave = () => {
     let payload = {};
-    if (selectedCategory && subcategoriesData) {
+    if (selectedCategory && createSubCategory) {
       payload = {
-        categoryName: selectedCategory,
-        subcategoryName: subcategoriesData,
+        categoryName: selectedCategory.toLowerCase(),
+        subcategoryName: createSubCategory.toLowerCase(),
       };
     } else {
       //show toaster message
     }
-
+    setOpenModal(false);
     dispatch(createSubCategoriesAsync(payload));
+    dispatch(fetchCategoriesAsync());
   };
-  // useEffect(() => {
-  //   if (selectedCategory) {
-  //     fetch(`/api/get-subcategories/${selectedCategory}`)
-  //       .then((res) => res.json())
-  //       .then((data) => setSubcategoriesData(data.subcategories))
-  //       .catch((err) => console.error(err));
-  //   }
-  // }, [selectedCategory]);
-
-  console.log("subcategoriesData", subcategoriesData);
 
   return (
     <>
@@ -148,23 +196,6 @@ function ProductForm() {
         noValidate
         onSubmit={handleSubmit((data) => {
           console.log("data for product 1234 data", data);
-          // const product =     {
-          //   "title": "OPPOF19122337",
-          //   "description": "OPPO F19 is officially announced on April 2021.",
-          //   "price": 300,
-          //   "discountPercentage": 17.91,
-          //   "rating": 0,
-          //   "stock": 123,
-          //   "brand": "OPPO",
-          //   "category": "smartphones",
-          //   "thumbnail": "https://i.dummyjson.com/data/products/4/thumbnail.jpg",
-          //   "images": [
-          //     "https://i.dummyjson.com/data/products/4/1.jpg",
-          //     "https://i.dummyjson.com/data/products/4/2.jpg",
-          //     "https://i.dummyjson.com/data/products/4/3.jpg",
-          //     "https://i.dummyjson.com/data/products/4/thumbnail.jpg"
-          //   ]
-          // }
           const product = { ...data };
           product.images = [
             product.image1,
@@ -172,12 +203,12 @@ function ProductForm() {
             product.image3,
             product.thumbnail,
           ];
-          product.highlights = [
-            product.highlight1,
-            product.highlight2,
-            product.highlight3,
-            product.highlight4,
-          ];
+          // product.highlights = [
+          //   product.highlight1,
+          //   product.highlight2,
+          //   product.highlight3,
+          //   product.highlight4,
+          // ];
           product.rating = 0;
           if (product.colors) {
             product.colors = product.colors.map((color) =>
@@ -187,6 +218,11 @@ function ProductForm() {
           if (product.sizes) {
             product.sizes = product.sizes.map((size) =>
               sizes.find((sz) => sz.id === size),
+            );
+          }
+          if (product.tags) {
+            product.tags = product.tags.map((tag) =>
+              tags.find((sz) => sz.id === tag),
             );
           }
 
@@ -206,6 +242,8 @@ function ProductForm() {
             reset();
           } else {
             dispatch(createProductAsync(product));
+            setSelectedCategory("");
+            setSelectedSubCategory("");
             // alert.success("Product Created");
             reset();
           }
@@ -229,7 +267,7 @@ function ProductForm() {
                   htmlFor="title"
                   className="text-gray-900 block text-sm font-medium leading-6"
                 >
-                  Product Name
+                  Product Name <span className="text-red">*</span>
                 </label>
                 <div className="mt-2">
                   <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
@@ -254,7 +292,7 @@ function ProductForm() {
                   htmlFor="description"
                   className="text-gray-900 block text-sm font-medium leading-6"
                 >
-                  Description
+                  Description <span className="text-red">*</span>
                 </label>
                 <div className="mt-2">
                   <textarea
@@ -270,34 +308,37 @@ function ProductForm() {
                 <p className="text-gray-600 mt-3 text-sm leading-6">
                   Write a few sentences about product.
                 </p>
-                {errors.email && (
-                  <p className="text-gray-600">{errors.description.message}</p>
+                {errors.description && (
+                  <p className="text-red">{errors.description.message}</p>
                 )}
               </div>
 
-              {/* <div className="col-span-full">
+              <div className="col-span-full">
                 <label
                   htmlFor="brand"
                   className="text-gray-900 block text-sm font-medium leading-6"
                 >
-                  Brand
+                  Brand <span className="text-red">*</span>
                 </label>
                 <div className="mt-2">
                   <select
                     {...register("brand", {
                       required: "brand is required",
                     })}
+                    className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
                     <option value="">--choose brand--</option>
                     {brands?.map((brand) => (
-                      <option key={brand.value} value={brand.value}>
-                        {brand.label}
+                      <option key={brand} value={brand}>
+                        {brand}
                       </option>
                     ))}
                   </select>
                 </div>
-              </div> */}
-
+                {errors.brand && (
+                  <p className="text-red">{errors.brand.message}</p>
+                )}
+              </div>
               <div className="col-span-full">
                 <label
                   htmlFor="colors"
@@ -314,7 +355,7 @@ function ProductForm() {
                         key={color.id}
                         value={color.id}
                       />{" "}
-                      {color.name}
+                      <span className="mr-3">{color.name}</span>
                     </>
                   ))}
                 </div>
@@ -336,7 +377,28 @@ function ProductForm() {
                         key={size.id}
                         value={size.id}
                       />{" "}
-                      {size.name}
+                      <span className="mr-3">{size.name}</span>
+                    </>
+                  ))}
+                </div>
+              </div>
+              <div className="col-span-full">
+                <label
+                  htmlFor="tags"
+                  className="text-gray-900 block text-sm font-medium leading-6"
+                >
+                  Tags
+                </label>
+                <div className="mt-2">
+                  {tags.map((tag) => (
+                    <>
+                      <input
+                        type="checkbox"
+                        {...register("tags", {})}
+                        key={tag.id}
+                        value={tag.id}
+                      />{" "}
+                      <span className="mr-3">{tag.name}</span>
                     </>
                   ))}
                 </div>
@@ -353,7 +415,7 @@ function ProductForm() {
                   <select
                     value={selectedCategory}
                     {...register("category", {
-                      required: "Category is required",
+                      // required: "Category is required",
                       onChange: (e) => {
                         console.log("Selected category event", e.target.value); // Logs the selected value
                         setSelectedCategory(e.target.value); // Update the selected category state
@@ -361,21 +423,18 @@ function ProductForm() {
                     })}
                     className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary`}
                   >
-                    {/* <option
+                    <option
                       value=""
                       disabled
                       className="text-body dark:text-bodydark"
                     >
                       Select your category
-                    </option> */}
+                    </option>
                     {categoriesData.map((category, index) => (
                       <option
                         key={index}
                         value={`${category}`}
                         className="text-body dark:text-bodydark"
-                        onSelect={(e) =>
-                          console.log("shala", e, category, e.target.value)
-                        }
                       >
                         {category}
                       </option>
@@ -408,19 +467,20 @@ function ProductForm() {
                   htmlFor="subcategory"
                   className="text-gray-900 block text-sm font-medium leading-6"
                 >
-                  Create Sub Category
+                  Create Sub Category{" "}
+                  {selectedCategory && `for ${selectedCategory}`}
                 </label>
 
-                <button
+                <div
                   disabled={selectedCategory?.length > 0 ? false : true}
                   onClick={(e) => {
                     // e.preventDefault();
                     setOpenModal(true);
                   }}
-                  className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
+                  className="flex w-full cursor-pointer justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
                 >
                   Create Sub-category
-                </button>
+                </div>
               </div>
               <div className="col-span-full">
                 <label
@@ -431,17 +491,16 @@ function ProductForm() {
                 </label>
                 <div className="relative z-20 bg-transparent dark:bg-form-input">
                   <select
-                    // value={selectedOption}
-                    // onChange={(e) => {
-                    //   setSelectedOption(e.target.value);
-                    //   changeTextColor();
-                    // }}
-                    {...register("category", {
-                      required: "category is required",
+                    value={selectedSubCategory}
+                    {...register("subcategory", {
+                      onChange: (e) => {
+                        console.log(
+                          "Selected sub category event",
+                          e.target.value,
+                        ); // Logs the selected value
+                        setSelectedSubCategory(e.target.value); // Update the selected category state
+                      },
                     })}
-                    // className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
-                    //   isOptionSelected ? "text-black dark:text-white" : ""
-                    // }`}
                     className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary`}
                   >
                     <option
@@ -449,23 +508,17 @@ function ProductForm() {
                       disabled
                       className="text-body dark:text-bodydark"
                     >
-                      Select your subject
+                      Select your category
                     </option>
-                    <option
-                      value="USA"
-                      className="text-body dark:text-bodydark"
-                    >
-                      USA
-                    </option>
-                    <option value="UK" className="text-body dark:text-bodydark">
-                      UK
-                    </option>
-                    <option
-                      value="Canada"
-                      className="text-body dark:text-bodydark"
-                    >
-                      Canada
-                    </option>
+                    {subcategoriesData.map((category, index) => (
+                      <option
+                        key={index}
+                        value={`${category}`}
+                        className="text-body dark:text-bodydark"
+                      >
+                        {category}
+                      </option>
+                    ))}
                   </select>
 
                   <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2">
@@ -488,23 +541,6 @@ function ProductForm() {
                     </svg>
                   </span>
                 </div>
-                {/* <div className="mt-2">
-                  <select
-                    {...register("category", {
-                      required: "category is required",
-                    })}
-                  >
-                    <option value="">--choose category--</option>
-                    {colors?.map((category) => (
-                      <option key={category.value} value={category.value}>
-                        {category.label}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.category && (
-                    <p className="text-red">{errors.category.message}</p>
-                  )}
-                </div> */}
               </div>
 
               <div className="sm:col-span-2">
@@ -512,7 +548,7 @@ function ProductForm() {
                   htmlFor="price"
                   className="text-gray-900 block text-sm font-medium leading-6"
                 >
-                  Price
+                  Price <span className="text-red">*</span>
                 </label>
                 <div className="mt-2">
                   <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
@@ -539,7 +575,7 @@ function ProductForm() {
                   htmlFor="discountPercentage"
                   className="text-gray-900 block text-sm font-medium leading-6"
                 >
-                  Discount Percentage
+                  Discount Percentage <span className="text-red">*</span>
                 </label>
                 <div className="mt-2">
                   <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
@@ -554,6 +590,7 @@ function ProductForm() {
                       className="w-full rounded-lg border-0 border-stroke bg-transparent py-2 pl-6 pr-2 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>
+                  -
                   {errors.discountPercentage && (
                     <p className="text-red">
                       {errors.discountPercentage.message}
@@ -567,7 +604,7 @@ function ProductForm() {
                   htmlFor="stock"
                   className="text-gray-900 block text-sm font-medium leading-6"
                 >
-                  Stock
+                  Stock <span className="text-red">*</span>
                 </label>
                 <div className="mt-2">
                   <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
@@ -586,13 +623,37 @@ function ProductForm() {
                   )}
                 </div>
               </div>
+              <div className="col-span-full">
+                <label
+                  htmlFor="model"
+                  className="text-gray-900 block text-sm font-medium leading-6"
+                >
+                  Model <span className="text-red">*</span>
+                </label>
+                <div className="mt-2">
+                  <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
+                    <input
+                      type="string"
+                      {...register("model", {
+                        required: "model is required",
+                        min: 0,
+                      })}
+                      id="model"
+                      className="w-full rounded-lg border-0 border-stroke bg-transparent py-2 pl-6 pr-2 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
+                  </div>
+                  {errors.model && (
+                    <p className="text-red">{errors.model.message}</p>
+                  )}
+                </div>
+              </div>
 
               <div className="sm:col-span-6">
                 <label
                   htmlFor="thumbnail"
                   className="text-gray-900 block text-sm font-medium leading-6"
                 >
-                  Thumbnail
+                  Thumbnail <span className="text-red">*</span>
                 </label>
                 <div className="mt-2">
                   <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
@@ -616,7 +677,7 @@ function ProductForm() {
                   htmlFor="image1"
                   className="text-gray-900 block text-sm font-medium leading-6"
                 >
-                  Image 1
+                  Image 1 <span className="text-red">*</span>
                 </label>
                 <div className="mt-2">
                   <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
@@ -640,7 +701,7 @@ function ProductForm() {
                   htmlFor="image2"
                   className="text-gray-900 block text-sm font-medium leading-6"
                 >
-                  Image 2
+                  Image 2 <span className="text-red">*</span>
                 </label>
                 <div className="mt-2">
                   <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
@@ -727,10 +788,9 @@ function ProductForm() {
           cancelOption="Cancel"
           dangerAction={handleDelete}
           saveAction={handleSave}
-          cancelAction={() => setOpenModal(null)}
+          cancelAction={() => setOpenModal(false)}
           showModal={openModal}
-          // subcategoriesData={setSubcategoriesData}
-          setSubcategoriesData={setSubcategoriesData}
+          setCreateSubCategory={setCreateSubCategory}
         ></SubcategoryModal>
       )}
     </>
