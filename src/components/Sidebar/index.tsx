@@ -70,7 +70,7 @@ const menuGroups = [
         // route: "#",
         children: [
           { label: "Product list", route: "/products" },
-          { label: "Create product", route: "/create-product" },
+          { label: "Create product", route: "/product-form" },
         ],
       },
 

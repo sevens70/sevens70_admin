@@ -6,7 +6,7 @@ import authReducer from "../components/redux/auth/authSlice";
 // import orderReducer from "../features/order/orderSlice";
 // import userReducer from "../features/user/userSlice";
 import thunk from "redux-thunk";
-import { productSlice } from "@/components/redux/product/productSlice";
+import productSlice from "@/components/redux/product/productSlice";
 export const store = configureStore({
   reducer: {
     product: productSlice,
@@ -15,5 +15,5 @@ export const store = configureStore({
     // order: orderReducer,
     // user: userReducer,
   },
-  // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
 });

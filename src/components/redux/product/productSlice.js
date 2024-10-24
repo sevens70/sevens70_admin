@@ -29,14 +29,14 @@ export const fetchProductByIdAsync = createAsyncThunk(
   },
 );
 export const fetchAllProductByAsinc = createAsyncThunk(
-  "product/fetchAllProducts",
+  "product/allProducts",
   async () => {
     const response = await fetchAllProducts();
     return response.data;
   },
 );
 export const fetchCategoriesAsync = createAsyncThunk(
-  "product/fetchCategories",
+  "product/categories",
   async () => {
     try {
       const response = await fetchCategories();
@@ -74,7 +74,10 @@ export const createSubCategoriesAsync = createAsyncThunk(
   "product/createSubCategories",
   async (payload) => {
     const response = await createSubCategories(payload);
-    if (response.message === "Server error" || response.message === "Subcategory already exists") {
+    if (
+      response.message === "Server error" ||
+      response.message === "Subcategory already exists"
+    ) {
       toast.error(response.message);
     } else {
       toast.success(response.message);
@@ -129,7 +132,6 @@ export const productSlice = createSlice({
       })
       .addCase(fetchCategoriesAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.categories = action.payload;
       })
       .addCase(fetchCategoriesAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -144,7 +146,7 @@ export const productSlice = createSlice({
         state.categories = action.payload;
       })
       .addCase(fetchProductByIdAsync.pending, (state) => {
-        state.status = "loading";
+        state.status = "loading...";
       })
       .addCase(fetchProductByIdAsync.fulfilled, (state, action) => {
         state.status = "idle";
@@ -156,6 +158,10 @@ export const productSlice = createSlice({
       .addCase(fetchAllProductByAsinc.fulfilled, (state, action) => {
         state.status = "idle";
         state.products = action.payload.products;
+      })
+      .addCase(fetchAllProductByAsinc.rejected, (state, action) => {
+        state.status = "failed";
+        console.error("error", action.error);
       })
       .addCase(createProductAsync.pending, (state) => {
         state.status = "loading";
@@ -183,7 +189,7 @@ export const { clearSelectedProduct } = productSlice.actions;
 export const selectAllProducts = (state) => state.product?.products;
 export const selectAllCategories = (state) => state.product?.categories;
 export const selectBrands = (state) => state.product?.brands;
-// export const selectCategories = (state) => state.product?.categories;
+export const selectCategories = (state) => state.product?.categories;
 export const selectProductById = (state) => state.product?.selectedProduct;
 export const selectProductListStatus = (state) => state.product?.status;
 

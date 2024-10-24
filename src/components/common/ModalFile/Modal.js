@@ -24,7 +24,10 @@ export default function Modal({
     setOpen(false);
     cancelAction();
   };
-
+  const handleClose = () => {
+    setOpen(false);
+    cancelAction();
+  };
   useEffect(() => {
     if (showModal) {
       setOpen(true);
@@ -39,7 +42,8 @@ export default function Modal({
         as="div"
         className="relative z-10"
         initialFocus={cancelButtonRef}
-        onClose={setOpen}
+        // onClose={setOpen}
+        onClose={handleClose}
       >
         <Transition.Child
           as={Fragment}
@@ -89,7 +93,7 @@ export default function Modal({
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
                     type="button"
-                    className="bg-red-600 hover:bg-red-500 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm sm:ml-3 sm:w-auto"
+                    className="hover:bg-red-500 inline-flex w-full justify-center rounded-md bg-red px-3 py-2 text-sm font-semibold text-white shadow-sm sm:ml-3 sm:w-auto"
                     onClick={handleDanger}
                   >
                     {dangerOption}

@@ -21,6 +21,18 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/not-found.jsx", "src/components/signin/page.jsx", "src/components/Header/DropdownUser.tsx", "src/app/create-product/page.tsx", "src/components/CreateProducts/ProductTable.jsx", "src/components/Products/ProductTable.jsx", "src/components/Products/index.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/not-found.jsx",
+    "src/components/signin/page.jsx",
+    "src/components/Header/DropdownUser.tsx",
+    "src/app/product-form/page.tsx",
+    "src/components/Products/CreateProducts/ProductTable.jsx",
+    "src/components/Products/ProductTable.jsx",
+    "src/components/Products/index.tsx"
+  ],
   "exclude": ["node_modules"]
 }

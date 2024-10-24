@@ -1,7 +1,7 @@
 import Calendar from "@/components/Products";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import CreateProduct from "@/components/CreateProducts";
+import CreateProduct from "@/components/Products/CreateProducts";
 
 export const metadata: Metadata = {
   title: "Products | Xartso - Next.js Dashboard Template",

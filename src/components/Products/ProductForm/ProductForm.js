@@ -1,6 +1,7 @@
+"use client";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import SubcategoryModal from "../common/ModalFile/SubcategoryModal.js";
+import SubcategoryModal from "../../common/ModalFile/SubcategoryModal.js";
 import {
   clearSelectedProduct,
   createProductAsync,
@@ -11,20 +12,26 @@ import {
   selectBrands,
   selectProductById,
   updateProductAsync,
-} from "../redux/product/productSlice";
+} from "../../redux/product/productSlice.js";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { fetchCategories } from "../redux/product/productAPI.js";
+import { fetchCategories } from "../../redux/product/productAPI.js";
+import toast from "react-hot-toast";
 
-function ProductForm() {
+function ProductForm({ title }) {
   const {
     register,
     handleSubmit,
     setValue,
     reset,
-    formState: { errors },
+    formState: { errors, values },
   } = useForm();
   // const brands = useSelector(selectBrands);
+  const dispatch = useDispatch();
+  const params = useParams();
+  const selectedProduct = useSelector(selectProductById);
+  const productState = useSelector((state) => state.product);
+  const allCategories = useSelector(selectAllCategories);
   const brands = [
     "Abc Fashion",
     "squire style",
@@ -34,10 +41,8 @@ function ProductForm() {
     "Cool style",
     "Modern look",
   ];
-  const dispatch = useDispatch();
-  const params = useParams();
-  const selectedProduct = useSelector(selectProductById);
-  const productState = useSelector((state) => state.product);
+
+  console.log("productState", productState);
   const [openModal, setOpenModal] = useState(false);
   // const [selectedCategory, setSelectedCategory] = useState("");
   const [categoriesData, setCategoriesData] = useState([
@@ -52,8 +57,6 @@ function ProductForm() {
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
   const [subcategoriesData, setSubcategoriesData] = useState([]);
   const [allCategoriesData, setAllcategoriesData] = useState([]);
-
-  // const alert = useAlert();
 
   const colors = [
     {
@@ -100,10 +103,17 @@ function ProductForm() {
     } else {
       dispatch(clearSelectedProduct());
     }
+    dispatch(fetchCategoriesAsync());
   }, [params.id, dispatch]);
 
   useEffect(() => {
+    console.log(
+      "123444",
+      selectedProduct?.tags.map((tag) => tag.id),
+    );
     if (selectedProduct && params.id) {
+      setSelectedCategory(selectedProduct.category);
+      setSelectedSubCategory(selectedProduct.subcategory);
       setValue("title", selectedProduct.title);
       setValue("description", selectedProduct.description);
       setValue("price", selectedProduct.price);
@@ -111,11 +121,13 @@ function ProductForm() {
       setValue("thumbnail", selectedProduct.thumbnail);
       setValue("model", selectedProduct.model);
       setValue("stock", selectedProduct.stock);
+      // setValue("categor", selectedProduct.stock);
       setValue("image1", selectedProduct.images[0]);
       setValue("image2", selectedProduct.images[1]);
       setValue("image3", selectedProduct.images[2]);
       setValue("brand", selectedProduct.brand);
       setValue("category", selectedProduct.category);
+      setValue("subcategory", selectedProduct.subcategory);
       setValue("highlight1", selectedProduct.highlights[0]);
       setValue("highlight2", selectedProduct.highlights[1]);
       setValue("highlight3", selectedProduct.highlights[2]);
@@ -134,12 +146,8 @@ function ProductForm() {
       );
     }
   }, [selectedProduct, params.id, setValue]);
-  // useEffect(()=>{
-  //   // dispatch(fetchAllCategoriesByAsinc());
-  //   // dispatch(fetchCategoriesAsync());
-  //   const allCategoriesData = fetchCategoriesAsync()
-  //   console.log("allCategories", allCategories)
-  // },[dispatch])
+
+  console.log("selectedProduct 123", selectedProduct);
   const fetchSubCategoriesData = async () => {
     try {
       const response = await fetchCategories();
@@ -169,6 +177,11 @@ function ProductForm() {
       }
     }
   }, [selectedCategory, allCategoriesData]);
+  console.log(
+    "allcategories & subCategoriesData",
+    allCategories,
+    subcategoriesData,
+  );
 
   const handleDelete = () => {
     const product = { ...selectedProduct };
@@ -237,23 +250,23 @@ function ProductForm() {
             product.id = params.id;
             product.rating = selectedProduct.rating || 0;
             dispatch(updateProductAsync(product));
-            // alert.success("Product Updated");
+            toast.success("Product Updated");
 
             reset();
           } else {
             dispatch(createProductAsync(product));
             setSelectedCategory("");
             setSelectedSubCategory("");
-            // alert.success("Product Created");
+            toast.success("Product Created");
             reset();
           }
         })}
       >
         <div className="space-y-12 bg-white p-12">
           <div className="border-gray-900/10 border-b pb-12">
-            <h2 className="text-gray-900 text-base font-semibold leading-7">
-              Add Product
-            </h2>
+            <h4 className="text-xl font-semibold text-black dark:text-white">
+              {title}
+            </h4>
 
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               {selectedProduct && selectedProduct.deleted && (
@@ -409,16 +422,16 @@ function ProductForm() {
                   htmlFor="category"
                   className="text-gray-900 block text-sm font-medium leading-6"
                 >
-                  Category
+                  Category <span className="text-red">*</span>
                 </label>
                 <div className="relative z-20 bg-transparent dark:bg-form-input">
                   <select
                     value={selectedCategory}
                     {...register("category", {
-                      // required: "Category is required",
+                      required: "category is required",
                       onChange: (e) => {
-                        console.log("Selected category event", e.target.value); // Logs the selected value
-                        setSelectedCategory(e.target.value); // Update the selected category state
+                        console.log("Selected category event", e.target.value);
+                        setSelectedCategory(e.target.value);
                       },
                     })}
                     className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary`}
@@ -461,6 +474,9 @@ function ProductForm() {
                     </svg>
                   </span>
                 </div>
+                {errors.category && (
+                  <p className="text-red">{errors.category.message}</p>
+                )}
               </div>
               <div className="col-span-full">
                 <label
@@ -477,7 +493,7 @@ function ProductForm() {
                     // e.preventDefault();
                     setOpenModal(true);
                   }}
-                  className="flex w-full cursor-pointer justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
+                  className="text-grey flex w-full cursor-pointer justify-center rounded bg-whiter p-3 font-medium hover:bg-opacity-90"
                 >
                   Create Sub-category
                 </div>
@@ -725,7 +741,7 @@ function ProductForm() {
                   htmlFor="image2"
                   className="text-gray-900 block text-sm font-medium leading-6"
                 >
-                  Image 3
+                  Image 3 <span className="text-red">*</span>
                 </label>
                 <div className="mt-2">
                   <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
@@ -745,10 +761,6 @@ function ProductForm() {
               </div>
             </div>
           </div>
-
-          {/* =================== deleted 01 */}
-
-          {/* =================== deleted o1 */}
         </div>
 
         <div className="mt-6 flex items-center justify-end gap-x-6">
