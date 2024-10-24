@@ -8,6 +8,7 @@ import SubcategoryModal from "../common/ModalFile/SubcategoryModal.js";
 import {
   clearSelectedProduct,
   createProductAsync,
+  createSubCategoriesAsync,
   fetchProductByIdAsync,
   selectBrands,
   selectCategories,
@@ -32,7 +33,16 @@ function ProductForm() {
   const params = useParams();
   const selectedProduct = useSelector(selectProductById);
   const [openModal, setOpenModal] = useState(null);
+  // const [selectedCategory, setSelectedCategory] = useState("");
+  const [categoriesData, setCategoriesData] = useState([
+    "Home",
+    "Men",
+    "Women",
+    "Accessories",
+    "Shop",
+  ]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [subcategoriesData, setSubcategoriesData] = useState([]);
   // const alert = useAlert();
 
   const colors = [
@@ -109,10 +119,29 @@ function ProductForm() {
     dispatch(updateProductAsync(product));
   };
   const handleSave = () => {
-    // const product = { ...selectedProduct };
-    // product.deleted = true;
-    // dispatch(updateProductAsync(product));
+    let payload = {};
+    if (selectedCategory && subcategoriesData) {
+      payload = {
+        categoryName: selectedCategory,
+        subcategoryName: subcategoriesData,
+      };
+    } else {
+      //show toaster message
+    }
+
+    dispatch(createSubCategoriesAsync(payload));
   };
+  // useEffect(() => {
+  //   if (selectedCategory) {
+  //     fetch(`/api/get-subcategories/${selectedCategory}`)
+  //       .then((res) => res.json())
+  //       .then((data) => setSubcategoriesData(data.subcategories))
+  //       .catch((err) => console.error(err));
+  //   }
+  // }, [selectedCategory]);
+
+  console.log("subcategoriesData", subcategoriesData);
+
   return (
     <>
       <form
@@ -323,40 +352,34 @@ function ProductForm() {
                 <div className="relative z-20 bg-transparent dark:bg-form-input">
                   <select
                     value={selectedCategory}
-                    onChange={(e) => {
-                      setSelectedCategory(e.target.value);
-                      changeTextColor();
-                    }}
                     {...register("category", {
-                      required: "category is required",
+                      required: "Category is required",
+                      onChange: (e) => {
+                        console.log("Selected category event", e.target.value); // Logs the selected value
+                        setSelectedCategory(e.target.value); // Update the selected category state
+                      },
                     })}
-                    // className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
-                    //   isOptionSelected ? "text-black dark:text-white" : ""
-                    // }`}
                     className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary`}
                   >
-                    <option
+                    {/* <option
                       value=""
                       disabled
                       className="text-body dark:text-bodydark"
                     >
-                      Select your subject
-                    </option>
-                    <option
-                      value="USA"
-                      className="text-body dark:text-bodydark"
-                    >
-                      USA
-                    </option>
-                    <option value="UK" className="text-body dark:text-bodydark">
-                      UK
-                    </option>
-                    <option
-                      value="Canada"
-                      className="text-body dark:text-bodydark"
-                    >
-                      Canada
-                    </option>
+                      Select your category
+                    </option> */}
+                    {categoriesData.map((category, index) => (
+                      <option
+                        key={index}
+                        value={`${category}`}
+                        className="text-body dark:text-bodydark"
+                        onSelect={(e) =>
+                          console.log("shala", e, category, e.target.value)
+                        }
+                      >
+                        {category}
+                      </option>
+                    ))}
                   </select>
 
                   <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2">
@@ -379,23 +402,6 @@ function ProductForm() {
                     </svg>
                   </span>
                 </div>
-                {/* <div className="mt-2">
-                  <select
-                    {...register("category", {
-                      required: "category is required",
-                    })}
-                  >
-                    <option value="">--choose category--</option>
-                    {colors?.map((category) => (
-                      <option key={category.value} value={category.value}>
-                        {category.label}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.category && (
-                    <p className="text-red">{errors.category.message}</p>
-                  )}
-                </div> */}
               </div>
               <div className="col-span-full">
                 <label
@@ -714,7 +720,7 @@ function ProductForm() {
       </form>
       {selectedCategory && (
         <SubcategoryModal
-          title={`Create sub category for ${category}`}
+          title={`Create sub category for ${selectedCategory}`}
           message=""
           dangerOption=""
           saveOption="Save"
@@ -723,6 +729,8 @@ function ProductForm() {
           saveAction={handleSave}
           cancelAction={() => setOpenModal(null)}
           showModal={openModal}
+          // subcategoriesData={setSubcategoriesData}
+          setSubcategoriesData={setSubcategoriesData}
         ></SubcategoryModal>
       )}
     </>

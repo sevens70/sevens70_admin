@@ -12,6 +12,7 @@ export default function SubCategoryModal({
   saveAction,
   cancelAction,
   showModal,
+  setSubcategoriesData,
 }) {
   const [open, setOpen] = useState(false);
 
@@ -70,7 +71,7 @@ export default function SubCategoryModal({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative h-[500px] transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+              <Dialog.Panel className="relative h-[200px] transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
                     <div className="bg-red-100 mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10">
@@ -91,11 +92,9 @@ export default function SubCategoryModal({
                         <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
                           <input
                             type="text"
-                            // {...register("title", {
-                            //   required: "name is required",
-                            // })}
-                            // id="title"
-                            // className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
+                            onChange={(e) => {
+                              setSubcategoriesData(e.target.value);
+                            }}
                             className="w-full rounded-lg border-0 border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                           />
                         </div>
@@ -114,7 +113,7 @@ export default function SubCategoryModal({
                   <button
                     type="button"
                     className="hover:bg-red-500 inline-flex w-full justify-center rounded-md bg-red px-3 py-2 text-sm font-semibold text-white shadow-sm sm:ml-3 sm:w-auto"
-                    onClick={saveAction}
+                    onClick={() => saveAction()}
                   >
                     {saveOption}
                   </button>

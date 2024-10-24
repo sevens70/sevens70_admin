@@ -18,7 +18,8 @@ export function fetchAllProducts() {
 
 export function createProduct(product) {
   return new Promise(async (resolve) => {
-    const response = await fetch(`${BASE_URL}/products/`, {
+    console.log("12345", product);
+    const response = await fetch(`${BASE_URL}/products`, {
       method: "POST",
       body: JSON.stringify(product),
       headers: { "content-type": "application/json" },
@@ -69,6 +70,18 @@ export function fetchProductsByFilters(filter, sort, pagination, admin) {
 export function fetchCategories() {
   return new Promise(async (resolve) => {
     const response = await fetch(`${BASE_URL}/categories`);
+    const data = await response.json();
+    resolve({ data });
+  });
+}
+export function createSubCategories(payload) {
+  return new Promise(async (resolve) => {
+    console.log("12345", payload);
+    const response = await fetch(`${BASE_URL}/categories/add-subcategory`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: { "content-type": "application/json" },
+    });
     const data = await response.json();
     resolve({ data });
   });

@@ -7,6 +7,7 @@ import {
   fetchProductById,
   createProduct,
   updateProduct,
+  createSubCategories,
 } from "./productAPI";
 
 const initialState = {
@@ -64,6 +65,13 @@ export const fetchCategoriesAsync = createAsyncThunk(
     return response.data;
   },
 );
+export const createSubCategoriesAsync = createAsyncThunk(
+  "product/createSubCategories",
+  async (payload) => {
+    const response = await createSubCategories(payload);
+    return response.data;
+  },
+);
 
 export const createProductAsync = createAsyncThunk(
   "product/create",
@@ -110,6 +118,13 @@ export const productSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchCategoriesAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.categories.push(action.payload);
+      })
+      .addCase(createSubCategoriesAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(createSubCategoriesAsync.fulfilled, (state, action) => {
         state.status = "idle";
         state.categories = action.payload;
       })
