@@ -1,14 +1,25 @@
 import Link from "next/link";
 import DarkModeSwitcher from "./DarkModeSwitcher";
-import DropdownMessage from "./DropdownMessage";
-import DropdownNotification from "./DropdownNotification";
+// import DropdownMessage from "./DropdownMessage";
+// import DropdownNotification from "./DropdownNotification";
 import DropdownUser from "./DropdownUser";
 import Image from "next/image";
+import { useSelector } from "react-redux";
+import { selectLoggedInUser } from "../redux/auth/authSlice";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
 }) => {
+  const router = useRouter();
+  const user = useSelector(selectLoggedInUser);
+  useEffect(() => {
+    if (!user) {
+      router.push("/auth/signin");
+    }
+  }, [user, router]);
   return (
     <header className="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
       <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">

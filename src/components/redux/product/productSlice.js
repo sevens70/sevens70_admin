@@ -70,18 +70,35 @@ export const fetchBrandsAsync = createAsyncThunk(
   },
 );
 
+// export const createSubCategoriesAsync = createAsyncThunk(
+//   "product/createSubCategories",
+//   async (payload) => {
+//     const response = await createSubCategories(payload);
+
+//     if (response.status === 400 || response.status === 500) {
+//       toast.error(response.message);
+//     } else {
+//       toast.success(response.message);
+//     }
+
+//     return response.data;
+//   },
+// );
 export const createSubCategoriesAsync = createAsyncThunk(
   "product/createSubCategories",
   async (payload) => {
     const response = await createSubCategories(payload);
+
     if (
-      response.message === "Server error" ||
-      response.message === "Subcategory already exists"
+      response.data.status === 400 ||
+      response.data.status === 404 ||
+      response.data.status === 500
     ) {
       toast.error(response.message);
     } else {
-      toast.success(response.message);
+      toast.success(`${response.data.message}`);
     }
+
     return response.data;
   },
 );

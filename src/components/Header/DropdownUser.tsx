@@ -14,7 +14,6 @@ const DropdownUser = () => {
     dispatch(signOutAsync());
     // });
   };
-  console.log("user 12344", user);
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link

@@ -2,15 +2,34 @@
 // import { selectLoggedInUser } from "@/components/auth/authSlice";
 import ECommerce from "@/components/Dashboard/E-commerce";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import { selectLoggedInUser } from "@/components/redux/auth/authSlice";
+import {
+  checkAuthAsync,
+  selectLoggedInUser,
+  selectUserChecked,
+} from "@/components/redux/auth/authSlice";
+import { fetchLoggedInUserAsync } from "@/components/user/userSlice";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Home() {
   const router = useRouter();
   const user = useSelector(selectLoggedInUser);
+  const dispatch = useDispatch();
+  // const user = useSelector(selectLoggedInUser);
+  const userChecked = useSelector(selectUserChecked);
 
+  useEffect(() => {
+    dispatch(checkAuthAsync());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      // dispatch(fetchItemsByUserIdAsync());
+      // we can get req.user by token on backend so no need to give in front-end
+      dispatch(fetchLoggedInUserAsync());
+    }
+  }, [dispatch, user]);
   console.log("user1234", user);
   // let user = false;
 
@@ -22,7 +41,7 @@ export default function Home() {
 
   return (
     <>
-      {user ? (
+      {userChecked ? (
         <DefaultLayout>
           <ECommerce />
         </DefaultLayout>
