@@ -42,6 +42,7 @@ const ProductTable = () => {
   // if (productState.status === "loading") {
   //   return <Loader />;
   // }
+
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="flex justify-between px-4 py-6 md:px-6 xl:px-7.5">
@@ -83,7 +84,7 @@ const ProductTable = () => {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                   <div className="h-12.5 w-15 rounded-md">
                     <Image
-                      src={product.image}
+                      src={product.thumbnail}
                       width={60}
                       height={50}
                       alt="Product"

@@ -13,7 +13,7 @@ import {
   selectProductById,
   updateProductAsync,
 } from "../../redux/product/productSlice.js";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchCategories } from "../../redux/product/productAPI.js";
 import toast from "react-hot-toast";
@@ -31,7 +31,8 @@ function ProductForm({ title }) {
   const params = useParams();
   const selectedProduct = useSelector(selectProductById);
   const productState = useSelector((state) => state.product);
-  const allCategories = useSelector(selectAllCategories);
+  // const allCategories = useSelector(selectAllCategories);
+  const router = useRouter();
   const brands = [
     "Abc Fashion",
     "squire style",
@@ -58,6 +59,7 @@ function ProductForm({ title }) {
   const [subcategoriesData, setSubcategoriesData] = useState([]);
   const [allCategoriesData, setAllcategoriesData] = useState([]);
 
+  //colors should be edited only code wll be sent
   const colors = [
     {
       name: "White",
@@ -177,11 +179,6 @@ function ProductForm({ title }) {
       }
     }
   }, [selectedCategory, allCategoriesData]);
-  console.log(
-    "allcategories & subCategoriesData",
-    allCategories,
-    subcategoriesData,
-  );
 
   const handleDelete = () => {
     const product = { ...selectedProduct };
@@ -765,6 +762,7 @@ function ProductForm({ title }) {
 
         <div className="mt-6 flex items-center justify-end gap-x-6">
           <button
+            onClick={() => router.push("/products")}
             type="button"
             className="text-gray-900 text-sm font-semibold leading-6"
           >
