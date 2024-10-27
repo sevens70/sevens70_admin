@@ -62,20 +62,20 @@ function ProductForm({ title }) {
   //colors should be edited only code wll be sent
   const colors = [
     {
-      name: "White",
-      class: "bg-white",
+      name: "Gray",
+      class: "bg-priceColor",
       selectedClass: "ring-gray-400",
       id: "white",
     },
     {
-      name: "Gray",
-      class: "bg-gray-200",
+      name: "Red",
+      class: "bg-primaryRed",
       selectedClass: "ring-gray-400",
       id: "gray",
     },
     {
-      name: "Black",
-      class: "bg-gray-900",
+      name: "Green",
+      class: "bg-successGreen",
       selectedClass: "ring-gray-900",
       id: "black",
     },
