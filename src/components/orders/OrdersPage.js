@@ -80,11 +80,11 @@ function OrdersPage() {
     <div className="overflow-x-auto">
       <div className="bg-gray-100 font-sans flex items-center justify-center overflow-hidden">
         <div className="w-full">
-          <div className="my-6 rounded bg-white shadow-md">
+          <div className="my-0 rounded bg-white shadow-md">
             <table className="w-full table-auto">
               <thead>
-                <tr className="bg-gray-200 text-gray-600 text-sm uppercase leading-normal">
-                  <th
+                <tr className="bg-gray-200 text-gray-600 text-xs uppercase leading-normal">
+                  {/* <th
                     className="maxHeight-35 cursor-pointer px-0 py-3 text-left"
                     onClick={(e) =>
                       handleSort({
@@ -100,8 +100,8 @@ function OrdersPage() {
                       ) : (
                         <ArrowDownIcon className="inline h-4 w-4"></ArrowDownIcon>
                       ))}
-                  </th>
-                  <th className="px-0 py-3 text-left">Items</th>
+                  </th> */}
+                  <th className="py-3 pl-3 text-left">Items</th>
                   <th
                     className="cursor-pointer px-0 py-3 text-left"
                     onClick={(e) =>
@@ -157,7 +157,7 @@ function OrdersPage() {
                         <ArrowDownIcon className="inline h-4 w-4"></ArrowDownIcon>
                       ))}
                   </th>
-                  <th className="px-0 py-3 text-center">Actions</th>
+                  <th className="py-3 pr-2 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody className="text-gray-600 text-sm font-light">
@@ -166,42 +166,51 @@ function OrdersPage() {
                     key={order.id}
                     className="border-gray-200 hover:bg-gray-100 border-b"
                   >
-                    <td className="whitespace-nowrap px-0 py-3 text-left">
+                    {/* <td className="whitespace-nowrap px-0 py-3 text-left">
                       <div className="flex items-center">
                         <div className="mr-2"></div>
                         <span className="font-medium">{order.id}</span>
                       </div>
-                    </td>
-                    <td className="px-0 py-3 text-left">
+                    </td> */}
+                    <td className="py-3 pl-3 text-left">
                       {order.items.map((item, index) => (
-                        <div key={index} className="flex items-center">
+                        <div key={index} className="mb-2 flex items-center">
                           <div className="mr-2">
                             <img
-                              className="h-6 w-6 rounded-full"
+                              className="h-[50px] w-[50px] rounded-full"
                               src={item.product.thumbnail}
                               alt={item.product.title}
                             />
                           </div>
-                          <span>
-                            {item.product.title} - #{item.quantity} - $
-                            {item.product.discountPrice}
-                          </span>
+                          <div>
+                            {" "}
+                            <p className="whitespace-nowrap">
+                              {item.product.title}
+                            </p>
+                            <p className="whitespace-nowrap">
+                              Qty: {item.quantity} - $
+                              {item.product.discountPrice}
+                            </p>
+                          </div>
                         </div>
                       ))}
+                      <p className="mt-3 text-center font-medium">
+                        Id: {order.id}
+                      </p>
                     </td>
-                    <td className="px-0 py-3 text-center">
+                    <td className="py-3 pr-3 text-center">
                       <div className="flex items-center justify-center">
                         ${order.totalAmount}
                       </div>
                     </td>
-                    <td className="px-0 py-3 text-center">
+                    <td className="px-2 py-3 text-center">
                       <div className="">
                         <div>
                           <strong>{order.selectedAddress.name}</strong>,
                         </div>
                         <div>{order.selectedAddress.street},</div>
                         <div>{order.selectedAddress.city}, </div>
-                        <div>{order.selectedAddress.state}, </div>
+                        {/* <div>{order.selectedAddress.state}, </div> */}
                         <div>{order.selectedAddress.pinCode}, </div>
                         <div>{order.selectedAddress.phone}, </div>
                       </div>
@@ -268,15 +277,15 @@ function OrdersPage() {
 
                     <td className="px-0 py-3 text-center">
                       <div className="item-center flex justify-center">
-                        <div className="hover:scale-120 mr-4 w-6 transform hover:text-purple-500">
+                        {/* <div className="hover:scale-120 mr-4 w-6 transform hover:text-purple-500">
                           <EyeIcon
                             className="h-8 w-8"
                             onClick={(e) => handleShow(order)}
                           ></EyeIcon>
-                        </div>
+                        </div> */}
                         <div className="hover:scale-120 mr-2 w-6 transform hover:text-purple-500">
                           <PencilIcon
-                            className="h-8 w-8"
+                            className="h-5 w-5"
                             onClick={(e) => handleEdit(order)}
                           ></PencilIcon>
                         </div>
