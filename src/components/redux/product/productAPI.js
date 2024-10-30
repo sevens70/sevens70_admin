@@ -1,4 +1,7 @@
-const BASE_URL = "http://localhost:8080"; // Define your base URL
+const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://xartso-server-xpr7.vercel.app"
+    : "http://localhost:8080";
 
 export function fetchProductById(id) {
   return new Promise(async (resolve) => {
