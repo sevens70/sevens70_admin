@@ -10,9 +10,7 @@ const DropdownUser = () => {
   const user = useSelector(selectLoggedInUser);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const handleLogout = () => {
-    // useEffect(() => {
     dispatch(signOutAsync());
-    // });
   };
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">

@@ -293,14 +293,14 @@ function ProductForm({ title }) {
             product.id = params.id;
             product.rating = selectedProduct.rating || 0;
             dispatch(updateProductAsync(product));
-            toast.success("Product Updated");
+            // toast.success("Product Updated");
 
             reset();
           } else {
             dispatch(createProductAsync(product));
             setSelectedCategory("");
             setSelectedSubCategory("");
-            toast.success("Product Created");
+            // toast.success("Product Created");
             reset();
           }
         })}
