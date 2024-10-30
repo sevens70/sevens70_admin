@@ -11,12 +11,10 @@ import {
   selectProductById,
   updateProductAsync,
 } from "../../redux/product/productSlice.js";
-import ShowWarningToast from "../../utils.js";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchCategories } from "../../redux/product/productAPI.js";
 import toast from "react-hot-toast";
-// const CLOUDINARY_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_NAME;
 
 function ProductForm({ title }) {
   const {
@@ -26,6 +24,7 @@ function ProductForm({ title }) {
     reset,
     formState: { errors, values },
   } = useForm();
+  // const brands = useSelector(selectBrands);
   const dispatch = useDispatch();
   const params = useParams();
   const selectedProduct = useSelector(selectProductById);
@@ -199,38 +198,36 @@ function ProductForm({ title }) {
     dispatch(createSubCategoriesAsync(payload));
     dispatch(fetchCategoriesAsync());
   };
+  // ====================
+  // const handleProductImageUpload = (e) => {
+  //   const file = e.target.files[0];
 
+  //   TransformFileData(file);
+  // };
   const handleProductImageUpload = async (e) => {
-    const files = e.target.files;
-    const formData = new FormData();
-    const uploadedImages = [];
-    if (files.length > 0) {
-      ShowWarningToast("Please wait for uploading...");
-    }
-    for (let file of files) {
-      formData.append("file", file);
-      formData.append("upload_preset", "online-shop"); 
-      try {
-        const res = await fetch(
-          `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload`,
-          {
-            method: "POST",
-            body: formData,
-          },
-        );
+    const files = Array.from(e.target.files);
+    console.log("files 123", files);
+    // Transform files to base64 for preview
+    const base64Files = await Promise.all(
+      files.map((file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }),
+    );
 
-        const data = await res.json();
-        console.log("Upload result:", data);
-        uploadedImages.push(data.secure_url);
-      } catch (error) {
-        console.error("Error uploading image:", error);
-        toast.error(`${error.message}`);
-      }
-    }
-    setProductImages(uploadedImages);
-    toast.success("Successfully upload images.");
-    if (uploadedImages?.length) setThumbnail(uploadedImages[0]);
+    // Set images and designate the first as the thumbnail
+    setProductImages(base64Files);
+    if (base64Files.length) setThumbnail(base64Files[0]);
   };
+
+  // ====================
+//if i want to use this then api limit size should be increased by putting them in index.js
+// app.use(express.json({ limit: "10mb" })); // Adjust based on your needs
+// app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
   console.log("files 123 980", productImages, thumbnail);
 
@@ -239,7 +236,14 @@ function ProductForm({ title }) {
       <form
         noValidate
         onSubmit={handleSubmit((data) => {
+          console.log("data for product 1234 data", data);
           const product = { ...data };
+          // product.images = [
+          //   product.image1,
+          //   product.image2,
+          //   product.image3,
+          //   product.thumbnail,
+          // ];
           product.images = [...productImages];
           product.images.push(product.thumbnail);
           // product.thumbnail = thumbnail;
@@ -260,6 +264,9 @@ function ProductForm({ title }) {
             );
           }
 
+          // delete product["image1"];
+          // delete product["image2"];
+          // delete product["image3"];
           product.price = +product.price;
           product.stock = +product.stock;
           product.discountPercentage = +product.discountPercentage;
@@ -270,13 +277,13 @@ function ProductForm({ title }) {
             dispatch(updateProductAsync(product));
             toast.success("Product Updated");
 
-            reset();
+            // reset();
           } else {
             dispatch(createProductAsync(product));
             setSelectedCategory("");
             setSelectedSubCategory("");
             toast.success("Product Created");
-            reset();
+            // reset();
           }
         })}
       >
@@ -496,7 +503,27 @@ function ProductForm({ title }) {
                   <p className="text-red">{errors.category.message}</p>
                 )}
               </div>
-              <div className="sm:col-span-3">
+              <div className="col-span-full">
+                <label
+                  htmlFor="subcategory"
+                  className="text-gray-900 block text-sm font-medium leading-6"
+                >
+                  Create Sub Category{" "}
+                  {selectedCategory && `for ${selectedCategory}`}
+                </label>
+
+                <div
+                  disabled={selectedCategory?.length > 0 ? false : true}
+                  onClick={(e) => {
+                    // e.preventDefault();
+                    setOpenModal(true);
+                  }}
+                  className="text-grey flex w-full cursor-pointer justify-center rounded bg-whiter p-3 font-medium hover:bg-opacity-90"
+                >
+                  Create Sub-category
+                </div>
+              </div>
+              <div className="col-span-full">
                 <label
                   htmlFor="subcategory"
                   className="text-gray-900 block text-sm font-medium leading-6"
@@ -554,28 +581,6 @@ function ProductForm({ title }) {
                       </g>
                     </svg>
                   </span>
-                </div>
-              </div>
-              <div className="sm:col-span-3">
-                <label
-                  htmlFor="subcategory"
-                  className="text-gray-900 block text-sm font-medium leading-6"
-                >
-                  {" "}
-                  {selectedCategory
-                    ? `Create Sub Category for ${selectedCategory}`
-                    : "Info: Subcategory create based on category"}
-                </label>
-
-                <div
-                  disabled={selectedCategory?.length > 0 ? false : true}
-                  onClick={(e) => {
-                    // e.preventDefault();
-                    setOpenModal(true);
-                  }}
-                  className="text-grey flex w-full cursor-pointer justify-center rounded bg-whiter p-3 font-medium hover:bg-opacity-90"
-                >
-                  Create Sub-category
                 </div>
               </div>
 
@@ -710,7 +715,7 @@ function ProductForm({ title }) {
               {/* =================== */}
               <div className="sm:col-span-6">
                 {" "}
-                <h2 className="mb-3 text-lg font-medium">
+                <h2 className="mb-3 text-2xl font-semibold">
                   Upload Product Images
                 </h2>
                 <div className="mb-4 ">
@@ -724,26 +729,16 @@ function ProductForm({ title }) {
                     />
                   </div>
                 </div>
-                {/* <div className="my-5">
-                  <img
-                    src={""}
-                    alt="Preview"
-                    className="col-span-1 h-full w-full rounded border-2 border-gray object-contain p-2 shadow"
-                    width="50"
-                    height="50"
-                  />
-                </div> */}
-              </div>
-              {/* =================== */}
+
             </div>
           </div>
         </div>
 
-        <div className="my-6 flex items-center justify-end gap-x-6 pr-12">
+        <div className="mt-6 flex items-center justify-end gap-x-6">
           <button
             onClick={() => router.push("/products")}
             type="button"
-            className="text-gray-900 rounded border border-red px-2 py-1 text-sm font-semibold leading-6 text-red"
+            className="text-gray-900 text-sm font-semibold leading-6"
           >
             Cancel
           </button>
@@ -787,3 +782,4 @@ function ProductForm({ title }) {
 }
 
 export default ProductForm;
+
