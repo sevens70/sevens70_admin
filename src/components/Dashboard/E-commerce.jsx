@@ -1,17 +1,28 @@
 "use client";
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 import React from "react";
 import CardDataStats from "../CardDataStats";
+import { selectOrders, selectTotalOrders } from "../orders/orderSlice";
+import { useSelector } from "react-redux";
 
 // const ChartThree = dynamic(() => import("@/components/Charts/ChartThree"), {
 //   ssr: false,
 // });
 
-const ECommerce: React.FC = () => {
+const ECommerce = () => {
+  const totalOrders = useSelector(selectTotalOrders);
+  const totalOrderItem = useSelector(selectOrders);
+  const totalAmountSum = totalOrderItem.reduce(
+    (sum, order) => sum + order.totalAmount,
+    0,
+  );
+
+  console.log(totalAmountSum);
+  console.log("totalOrders", totalOrders, totalOrderItem, totalAmountSum);
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
+        {/* <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -29,8 +40,13 @@ const ECommerce: React.FC = () => {
               fill=""
             />
           </svg>
-        </CardDataStats>
-        <CardDataStats title="Total Profit" total="$45,2K" rate="4.35%" levelUp>
+        </CardDataStats> */}
+        <CardDataStats
+          title="Total Orders"
+          total={`${totalOrders}`}
+          rate=""
+          levelUp
+        >
           <svg
             className="fill-primary dark:fill-white"
             width="20"
@@ -53,7 +69,13 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Product" total="2.450" rate="2.59%" levelUp>
+        {/* <CardDataStats title="Total Product" total="2.450" rate="2.59%" levelUp> */}
+        <CardDataStats
+          title="Total Sales"
+          total={`${totalAmountSum}`}
+          rate=""
+          levelUp
+        >
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -72,7 +94,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Users" total="3.456" rate="0.95%" levelDown>
+        <CardDataStats title="Total Users" total="0.00" rate="0.00%" levelDown>
           <svg
             className="fill-primary dark:fill-white"
             width="22"

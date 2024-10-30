@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllOrdersAsync,
   selectOrders,
+  selectStatus,
   selectTotalOrders,
   updateOrderAsync,
 } from "../../components/orders/orderSlice";
@@ -16,11 +17,13 @@ import {
 } from "@heroicons/react/24/outline";
 import Pagination from "../../components/common/Pagination";
 import { ITEMS_PER_PAGE } from "../common/constants";
+import Loader from "../common/Loader";
 
 function OrdersPage() {
   const [page, setPage] = useState(1);
   const dispatch = useDispatch();
   const orders = useSelector(selectOrders);
+  const ordersStatus = useSelector(selectStatus);
   const totalOrders = useSelector(selectTotalOrders);
   const [editableOrderId, setEditableOrderId] = useState(-1);
   const [sort, setSort] = useState({});
@@ -70,12 +73,19 @@ function OrdersPage() {
         return "bg-purple-200 text-purple-600";
     }
   };
-
+  // useEffect(() => {
+  //   const pagination = { _page: page, _limit: ITEMS_PER_PAGE };
+  //   dispatch(fetchAllOrdersAsync({ sort, pagination }));
+  // }, []);
+  // console.log("ordersStatus 123", ordersStatus);
   useEffect(() => {
     const pagination = { _page: page, _limit: ITEMS_PER_PAGE };
     dispatch(fetchAllOrdersAsync({ sort, pagination }));
   }, [dispatch, page, sort]);
-
+  // ordersStatus;
+  if (ordersStatus === "loading") {
+    return <Loader />;
+  }
   return (
     <div className="overflow-x-auto">
       <div className="bg-gray-100 font-sans flex items-center justify-center overflow-hidden">

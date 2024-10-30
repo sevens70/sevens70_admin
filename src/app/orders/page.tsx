@@ -1,6 +1,7 @@
 import OrdersPage from "../../components/orders/OrdersPage";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 
 export const metadata: Metadata = {
   title: "Orders | Xartso - Next.js Dashboard Template",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 const page = () => {
   return (
     <DefaultLayout>
+      <Breadcrumb pageName="Orders" />
       <OrdersPage />
     </DefaultLayout>
   );

@@ -62,22 +62,46 @@ function ProductForm({ title }) {
   //colors should be edited only code wll be sent
   const colors = [
     {
-      name: "Gray",
+      name: "Light Brown",
       class: "bg-priceColor",
-      selectedClass: "ring-gray-400",
-      id: "white",
+      selectedClass: "#B5651D",
+      id: "light_brown",
     },
     {
       name: "Red",
       class: "bg-primaryRed",
-      selectedClass: "ring-gray-400",
-      id: "gray",
+      selectedClass: "red",
+      id: "red",
     },
     {
       name: "Green",
       class: "bg-successGreen",
-      selectedClass: "ring-gray-900",
-      id: "black",
+      selectedClass: "green",
+      id: "green",
+    },
+    {
+      name: "Blue",
+      class: "blue",
+      selectedClass: "blue",
+      id: "blue",
+    },
+    {
+      name: "Light Purple",
+      class: "light_purple",
+      selectedClass: "purple",
+      id: "light_purple",
+    },
+    {
+      name: "Jean Blue",
+      class: "jean blue",
+      selectedClass: "#B5651D",
+      id: "jean_blue",
+    },
+    {
+      name: "Yellow",
+      class: "yellow",
+      selectedClass: "yellow",
+      id: "yellow",
     },
   ];
 
@@ -112,6 +136,7 @@ function ProductForm({ title }) {
     console.log(
       "123444",
       selectedProduct?.tags.map((tag) => tag.id),
+      selectedProduct,
     );
     if (selectedProduct && params.id) {
       setSelectedCategory(selectedProduct.category);
@@ -209,7 +234,7 @@ function ProductForm({ title }) {
     }
     for (let file of files) {
       formData.append("file", file);
-      formData.append("upload_preset", "online-shop"); 
+      formData.append("upload_preset", "online-shop");
       try {
         const res = await fetch(
           `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload`,
@@ -262,7 +287,7 @@ function ProductForm({ title }) {
 
           product.price = +product.price;
           product.stock = +product.stock;
-          product.discountPercentage = +product.discountPercentage;
+          product.discountPercentage = +product.discountPercentage || 0;
           console.log(product);
           if (params.id) {
             product.id = params.id;
@@ -611,27 +636,27 @@ function ProductForm({ title }) {
                   htmlFor="discountPercentage"
                   className="text-gray-900 block text-sm font-medium leading-6"
                 >
-                  Discount Percentage <span className="text-red">*</span>
+                  Discount Percentage
                 </label>
                 <div className="mt-2">
                   <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
                     <input
                       type="number"
                       {...register("discountPercentage", {
-                        required: "discountPercentage is required",
-                        min: 0,
-                        max: 100,
+                        // required: "discountPercentage is required",
+                        // min: 0,
+                        // max: 100,
                       })}
                       id="discountPercentage"
                       className="w-full rounded-lg border-0 border-stroke bg-transparent py-2 pl-6 pr-2 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>
-                  -
+                  {/*                   
                   {errors.discountPercentage && (
                     <p className="text-red">
                       {errors.discountPercentage.message}
                     </p>
-                  )}
+                  )} */}
                 </div>
               </div>
 

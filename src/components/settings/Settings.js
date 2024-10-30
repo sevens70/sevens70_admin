@@ -158,7 +158,8 @@ export default function Settings() {
                       <div className="max-h-[100px] max-w-[100px]">
                         {logoUrl && (
                           <Image
-                            src={logoUrl}
+                            src={`${logoUrl}`}
+                            // src={"https://iili.io/2B8RIyP.png"}
                             alt="logo"
                             layout="responsive"
                             width={100}

@@ -3,17 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllProducts } from "../redux/product/productAPI";
 import {
   fetchAllProductByAsinc,
   fetchCategoriesAsync,
   fetchProductByIdAsync,
-  selectAllCategories,
   selectAllProducts,
   selectProductById,
   updateProductAsync,
 } from "../redux/product/productSlice";
-import { checkAuth } from "../redux/auth/authAPI";
 import Loader from "../common/Loader";
 import Modal from "../common/ModalFile/Modal";
 const ProductTable = () => {
@@ -21,11 +18,7 @@ const ProductTable = () => {
   const [openModal, setOpenModal] = useState(false);
   const products = useSelector(selectAllProducts);
   const selectedProduct = useSelector(selectProductById);
-  const allCategories = useSelector(selectAllCategories);
   const productState = useSelector((state) => state.product);
-  // const brands = useSelector(selectBrands);
-  // const categories = useSelector(selectCategories);
-  // const totalItems = useSelector(selectTotalItems);
   useEffect(() => {
     dispatch(fetchCategoriesAsync);
     dispatch(fetchAllProductByAsinc());
@@ -39,17 +32,19 @@ const ProductTable = () => {
     dispatch(fetchAllProductByAsinc());
   };
 
-  // if (productState.status === "loading") {
-  //   return <Loader />;
-  // }
-
+  if (productState.status === "loading") {
+    return <Loader />;
+  }
+  console.log("productState", productState);
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="flex justify-between px-4 py-6 md:px-6 xl:px-7.5">
         <h4 className="text-xl font-semibold text-black dark:text-white">
           Top Products
         </h4>
-        <button className="border-stroke">Add new product</button>
+        <Link href={`/product-form`} className="border-stroke">
+          Add new product
+        </Link>
       </div>
 
       <div className="grid grid-cols-6 border-t border-stroke px-4 py-4.5 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5">
@@ -82,7 +77,7 @@ const ProductTable = () => {
             >
               <div className="col-span-3 flex items-center">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <div className="h-12.5 w-15 rounded-md">
+                  <div className="h-12.5 w-15 overflow-hidden rounded-md">
                     <Image
                       src={product.thumbnail}
                       width={60}
@@ -116,7 +111,7 @@ const ProductTable = () => {
                 </p>
               </div>
               <div className="col-span-1 flex items-center space-x-3.5">
-                <button className="hover:text-primary">
+                {/* <button className="hover:text-primary">
                   <svg
                     className="fill-current"
                     width="18"
@@ -134,7 +129,7 @@ const ProductTable = () => {
                       fill=""
                     />
                   </svg>
-                </button>
+                </button> */}
                 <button
                   onClick={(e) => {
                     e.preventDefault();
