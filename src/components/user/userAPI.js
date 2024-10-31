@@ -4,8 +4,13 @@ const BASE_URL =
     : "http://localhost:8080";
 
 export function fetchLoggedInUserOrders() {
+  const token = localStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     const response = await fetch(`${BASE_URL}/orders/own/`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       credentials: "include",
     });
     const data = await response.json();
@@ -14,8 +19,13 @@ export function fetchLoggedInUserOrders() {
 }
 
 export function fetchLoggedInUser() {
+  const token = localStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     const response = await fetch(`${BASE_URL}/users/own`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       credentials: "include",
     });
     const data = await response.json();
@@ -24,11 +34,15 @@ export function fetchLoggedInUser() {
 }
 
 export function updateUser(update) {
+  const token = localStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     const response = await fetch(`${BASE_URL}/users/${update.id}`, {
       method: "PATCH",
       body: JSON.stringify(update),
-      headers: { "content-type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       credentials: "include",
     });
     const data = await response.json();

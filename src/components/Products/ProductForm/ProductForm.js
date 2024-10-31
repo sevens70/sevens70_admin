@@ -245,7 +245,6 @@ function ProductForm({ title }) {
         );
 
         const data = await res.json();
-        console.log("Upload result:", data);
         uploadedImages.push(data.secure_url);
       } catch (error) {
         console.error("Error uploading image:", error);

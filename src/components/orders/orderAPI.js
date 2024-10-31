@@ -5,10 +5,14 @@ const BASE_URL =
 
 export function createOrder(order) {
   return new Promise(async (resolve) => {
+    const token = localStorage.getItem("authToken");
     const response = await fetch(`${BASE_URL}/orders`, {
       method: "POST",
       body: JSON.stringify(order),
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       credentials: "include",
     });
     const data = await response.json();
@@ -18,10 +22,14 @@ export function createOrder(order) {
 
 export function updateOrder(order) {
   return new Promise(async (resolve) => {
+    const token = localStorage.getItem("authToken");
     const response = await fetch(`${BASE_URL}/orders/${order.id}`, {
       method: "PATCH",
       body: JSON.stringify(order),
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       credentials: "include",
     });
     const data = await response.json();
@@ -40,8 +48,13 @@ export function fetchAllOrders(sort, pagination) {
   }
 
   return new Promise(async (resolve) => {
+    const token = localStorage.getItem("authToken");
     const response = await fetch(`${BASE_URL}/orders?${queryString}`, {
       credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await response.json();
     const totalOrders = await response.headers.get("X-Total-Count");

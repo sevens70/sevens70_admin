@@ -1,9 +1,13 @@
 export function addToCart(item) {
   return new Promise(async (resolve) => {
-    const response = await fetch('/cart', {
-      method: 'POST',
+    const token = localStorage.getItem("authToken");
+    const response = await fetch("/cart", {
+      method: "POST",
       body: JSON.stringify(item),
-      headers: { 'content-type': 'application/json' },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await response.json();
     resolve({ data });
@@ -11,19 +15,33 @@ export function addToCart(item) {
 }
 
 export function fetchItemsByUserId() {
+  const token = localStorage.getItem("authToken");
+
   return new Promise(async (resolve) => {
-    const response = await fetch('/cart');
+    const response = await fetch("/cart", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+
     const data = await response.json();
     resolve({ data });
   });
 }
 
 export function updateCart(update) {
+  const token = localStorage.getItem("authToken");
   return new Promise(async (resolve) => {
-    const response = await fetch('/cart/' + update.id, {
-      method: 'PATCH',
+    const response = await fetch("/cart/" + update.id, {
+      method: "PATCH",
       body: JSON.stringify(update),
-      headers: { 'content-type': 'application/json' },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await response.json();
     resolve({ data });
@@ -31,10 +49,14 @@ export function updateCart(update) {
 }
 
 export function deleteItemFromCart(itemId) {
+  const token = localStorage.getItem("authToken");
   return new Promise(async (resolve) => {
-    const response = await fetch('/cart/' + itemId, {
-      method: 'DELETE',
-      headers: { 'content-type': 'application/json' },
+    const response = await fetch("/cart/" + itemId, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await response.json();
     resolve({ data: { id: itemId } });
@@ -49,6 +71,6 @@ export function resetCart() {
     for (let item of items) {
       await deleteItemFromCart(item.id);
     }
-    resolve({ status: 'success' });
+    resolve({ status: "success" });
   });
 }
