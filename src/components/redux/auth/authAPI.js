@@ -39,12 +39,39 @@ export function loginUser(loginInfo) {
   });
 }
 
+// export function checkAuth() {
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       const response = await fetch(`${BASE_URL}/auth/check`, {
+//         method: "GET",
+//         credentials: "include",
+//       });
+
+//       if (response.ok) {
+//         const data = await response.json();
+//         resolve({ data });
+//       } else {
+//         const error = await response.text();
+//         reject(error);
+//       }
+//     } catch (error) {
+//       reject(error);
+//     }
+//   });
+// }
 export function checkAuth() {
   return new Promise(async (resolve, reject) => {
     try {
+      // Retrieve the token from localStorage (or sessionStorage, or cookies)
+      const token = localStorage.getItem("authToken");
+
       const response = await fetch(`${BASE_URL}/auth/check`, {
         method: "GET",
         credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Add the token to the Authorization header
+        },
       });
 
       if (response.ok) {
@@ -59,6 +86,7 @@ export function checkAuth() {
     }
   });
 }
+
 
 export function signOut() {
   return new Promise(async (resolve, reject) => {

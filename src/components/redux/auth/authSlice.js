@@ -34,6 +34,10 @@ export const loginUserAsync = createAsyncThunk(
     console.log("1234", loginInfo);
     try {
       const response = await loginUser(loginInfo);
+      console.log("response data", response.data?.token)
+      if(response.data?.token) {
+        localStorage.setItem("authToken", response.data.token);
+      }
       return response.data;
     } catch (error) {
       console.log(error);
@@ -81,6 +85,7 @@ export const resetPasswordAsync = createAsyncThunk(
 export const signOutAsync = createAsyncThunk("user/signOut", async () => {
   const response = await signOut();
   localStorage.removeItem("authData");
+  localStorage.removeItem("authToken");
   // The value we return becomes the `fulfilled` action payload
   return response.data;
 });
