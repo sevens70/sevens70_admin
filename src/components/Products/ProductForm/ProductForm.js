@@ -24,6 +24,7 @@ function ProductForm({ title }) {
     handleSubmit,
     setValue,
     reset,
+    watch,
     formState: { errors, values },
   } = useForm();
   const dispatch = useDispatch();
@@ -58,7 +59,7 @@ function ProductForm({ title }) {
   const [subcategoriesData, setSubcategoriesData] = useState([]);
   const [allCategoriesData, setAllcategoriesData] = useState([]);
   const [productImages, setProductImages] = useState([]);
-  const [thumbnail, setThumbnail] = useState(null);
+  // const [thumbnail, setThumbnail] = useState(null);
   //colors should be edited only code wll be sent
   const colors = [
     {
@@ -253,10 +254,52 @@ function ProductForm({ title }) {
     }
     setProductImages(uploadedImages);
     toast.success("Successfully upload images.");
-    if (uploadedImages?.length) setThumbnail(uploadedImages[0]);
+    // if (uploadedImages?.length) setThumbnail(uploadedImages[0]);
   };
+  const handleThumbnailImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      ShowWarningToast("Please wait for uploading...");
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "online-shop");
 
-  console.log("files 123 980", productImages, thumbnail);
+      try {
+        const res = await fetch(
+          `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload`,
+          {
+            method: "POST",
+            body: formData,
+          },
+        );
+
+        const data = await res.json();
+        if (data.secure_url) {
+          setValue("thumbnail", data.secure_url); // Set the image URL in the form
+          toast.success("Successfully uploaded image.");
+        }
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        toast.error(`${error.message}`);
+      }
+    }
+  };
+  const formValues = watch();
+
+  useEffect(() => {
+    console.log("Form Values:", formValues, typeof formValues.thumbnail);
+  }, [formValues]);
+  const isThumbnailUploaded = () => {
+    // Check if the thumbnail is a string (the uploaded URL)
+    return (
+      typeof formValues.thumbnail === "string" &&
+      formValues.thumbnail.length > 0
+    );
+  };
+  const handleDeleteThumbnail = () => {
+    setValue("thumbnail", "");
+  };
+  // console.log("files 123 980", productImages, formValues);
 
   return (
     <>
@@ -595,7 +638,11 @@ function ProductForm({ title }) {
                   disabled={selectedCategory?.length > 0 ? false : true}
                   onClick={(e) => {
                     // e.preventDefault();
-                    setOpenModal(true);
+                    if (selectedCategory) {
+                      setOpenModal(true);
+                    } else {
+                      toast.error("Choose category first.");
+                    }
                   }}
                   className="text-grey flex w-full cursor-pointer justify-center rounded bg-whiter p-3 font-medium hover:bg-opacity-90"
                 >
@@ -709,13 +756,16 @@ function ProductForm({ title }) {
               </div>
 
               <div className="sm:col-span-6">
-                <label
-                  htmlFor="thumbnail"
-                  className="text-gray-900 block text-sm font-medium leading-6"
-                >
-                  Thumbnail <span className="text-red">*</span>
-                </label>
-                <div className="mt-2">
+                <div>
+                  {" "}
+                  <label
+                    htmlFor="thumbnail"
+                    className="text-gray-900 block text-sm font-medium leading-6"
+                  >
+                    Thumbnail<span className="text-red">*</span>
+                  </label>
+                </div>
+                {/* <div className="mt-2">
                   <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
                     <input
                       type="text"
@@ -729,6 +779,42 @@ function ProductForm({ title }) {
                   {errors.thumbnail && (
                     <p className="text-red">{errors.thumbnail.message}</p>
                   )}
+                </div> */}
+                <div className="">
+                  <div className="mb-2 ">
+                    <div className="w-full">
+                      {isThumbnailUploaded() ? (
+                        <div className="thumbnail__area relative">
+                          <img
+                            src={formValues?.thumbnail}
+                            className="h-[150px] w-[150px] object-cover" // Ensure correct class syntax for width and height
+                            alt="thumbnail"
+                          />
+                          {formValues?.thumbnail && ( 
+                            <p
+                              onClick={handleDeleteThumbnail}
+                              className="bg-red-600 absolute left-30 top-1 cursor-pointer rounded-full bg-red px-2 py-0 text-white"
+                            >
+                              X
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        <input
+                          className="form-control text-gray-700 border-gray-300 focus:text-gray-700 m-0 mt-8 block w-full rounded border border-solid bg-white bg-clip-padding px-2 py-1.5 text-base font-normal transition ease-in-out focus:border-blue-600 focus:bg-white focus:outline-none"
+                          type="file"
+                          {...register("thumbnail", {
+                            required: "thumbnail is required",
+                          })}
+                          id="thumbnailFile"
+                          onChange={handleThumbnailImageUpload}
+                        />
+                      )}
+                    </div>
+                  </div>
+                  {errors.thumbnail && (
+                    <p className="text-red">{errors.thumbnail.message}</p>
+                  )}
                 </div>
               </div>
               {/* =================== */}
@@ -737,7 +823,7 @@ function ProductForm({ title }) {
                 <h2 className="mb-3 text-lg font-medium">
                   Upload Product Images
                 </h2>
-                <div className="mb-4 ">
+                <div className="mt-[-20px]">
                   <div className="w-full">
                     <input
                       className="form-control text-gray-700 border-gray-300 focus:text-gray-700 m-0 mt-8 block w-full rounded border border-solid bg-white bg-clip-padding px-2 py-1.5 text-base font-normal transition ease-in-out focus:border-blue-600 focus:bg-white focus:outline-none"
