@@ -19,10 +19,13 @@ export const createOrderAsync = createAsyncThunk(
 );
 export const updateOrderAsync = createAsyncThunk(
   "order/updateOrder",
-  async (order) => {
-    const response = await updateOrder(order);
-    // The value we return becomes the `fulfilled` action payload
-    return response.data;
+  async (order, { rejectWithValue }) => {
+    try {
+      const response = await updateOrder(order);
+      return response.data; // Successful response data
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
   },
 );
 
@@ -74,6 +77,10 @@ export const orderSlice = createSlice({
           (order) => order.id === action.payload.id,
         );
         state.orders[index] = action.payload;
+      })
+      .addCase(updateOrderAsync.rejected, (state, action) => {
+        console.log("status hit by 01", state);
+        state.status = "failed";
       });
   },
 });

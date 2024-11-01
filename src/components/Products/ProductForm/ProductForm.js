@@ -156,21 +156,17 @@ function ProductForm({ title }) {
       setValue("brand", selectedProduct.brand);
       setValue("category", selectedProduct.category);
       setValue("subcategory", selectedProduct.subcategory);
-      setValue("highlight1", selectedProduct.highlights[0]);
-      setValue("highlight2", selectedProduct.highlights[1]);
-      setValue("highlight3", selectedProduct.highlights[2]);
-      setValue("highlight4", selectedProduct.highlights[3]);
       setValue(
         "sizes",
-        selectedProduct.sizes.map((size) => size.id),
+        selectedProduct.sizes.map((size) => size?.id),
       );
       setValue(
         "tags",
-        selectedProduct.tags.map((tag) => tag.id),
+        selectedProduct.tags.map((tag) => tag?.id),
       );
       setValue(
         "colors",
-        selectedProduct.colors.map((color) => color.id),
+        selectedProduct.colors.map((color) => color?.id),
       );
     }
   }, [selectedProduct, params.id, setValue]);
@@ -275,7 +271,7 @@ function ProductForm({ title }) {
 
         const data = await res.json();
         if (data.secure_url) {
-          setValue("thumbnail", data.secure_url); // Set the image URL in the form
+          setValue("thumbnail", data.secure_url);
           toast.success("Successfully uploaded image.");
         }
       } catch (error) {
@@ -286,11 +282,7 @@ function ProductForm({ title }) {
   };
   const formValues = watch();
 
-  useEffect(() => {
-    console.log("Form Values:", formValues, typeof formValues.thumbnail);
-  }, [formValues]);
   const isThumbnailUploaded = () => {
-    // Check if the thumbnail is a string (the uploaded URL)
     return (
       typeof formValues.thumbnail === "string" &&
       formValues.thumbnail.length > 0
@@ -299,7 +291,6 @@ function ProductForm({ title }) {
   const handleDeleteThumbnail = () => {
     setValue("thumbnail", "");
   };
-  // console.log("files 123 980", productImages, formValues);
 
   return (
     <>
@@ -790,7 +781,7 @@ function ProductForm({ title }) {
                             className="h-[150px] w-[150px] object-cover" // Ensure correct class syntax for width and height
                             alt="thumbnail"
                           />
-                          {formValues?.thumbnail && ( 
+                          {formValues?.thumbnail && (
                             <p
                               onClick={handleDeleteThumbnail}
                               className="bg-red-600 absolute left-30 top-1 cursor-pointer rounded-full bg-red px-2 py-0 text-white"

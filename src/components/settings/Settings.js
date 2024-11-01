@@ -1,21 +1,30 @@
 "use client";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { createWebsiteInfo } from "./settingsAPI";
+import { fetchWebsiteInfoAsync, selectWebsiteInfo } from "./settingsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import ShowWarningToast from "../utils";
 export default function Settings() {
   const {
     register,
     handleSubmit,
     setValue,
+    watch,
     reset,
     formState: { errors },
   } = useForm();
-  const [logoUrl, setLogoUrl] = useState("https://iili.io/2B8RIyP.png");
+  const dispatch = useDispatch();
+  const websiteInfo = useSelector(selectWebsiteInfo);
+  const formValues = watch();
+  const [logoUrlValue, setLogoUrlValue] = useState(
+    "https://iili.io/2B8RIyP.png",
+  );
   const handleProductImageUpload = async (e) => {
+    ShowWarningToast("Please wait for uploading...");
     const file = e.target.files[0];
-    console.log("file 0022", file);
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "online-shop");
@@ -33,14 +42,27 @@ export default function Settings() {
       console.log("data for", data);
 
       if (data?.secure_url) {
-        setLogoUrl(data.secure_url);
-        setValue("logoUrl", data?.secure_url); // update form field with Cloudinary URL
+        setLogoUrlValue(data.secure_url);
+        setValue("logoUrl", data?.secure_url);
         toast.success("Logo successfully uploaded");
       }
     } catch (error) {
       toast.error("Error uploading image:", error);
     }
   };
+  useEffect(() => {
+    dispatch(fetchWebsiteInfoAsync());
+  }, []);
+  useEffect(() => {
+    if (websiteInfo?.length > 0) {
+      setValue("emailAddress", websiteInfo[0]?.email);
+      setValue("phoneNumber", websiteInfo[0]?.phoneNumber);
+      setValue("logoUrl", websiteInfo[0]?.logoUrl);
+      if (websiteInfo[0]?.logoUrl) {
+        setLogoUrlValue(websiteInfo[0]?.logoUrl);
+      }
+    }
+  }, [websiteInfo]);
 
   const onSubmit = async (formData) => {
     console.log("submit data", formData);
@@ -56,9 +78,10 @@ export default function Settings() {
       const result = await createWebsiteInfo(payload);
       console.log("API response:", result);
       toast.success("Data saved successfully");
+      dispatch(fetchWebsiteInfoAsync);
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.success("Failed to save data");
+      toast.error("Failed to save data");
     }
   };
 
@@ -96,9 +119,7 @@ export default function Settings() {
                         placeholder="++880 1827969106"
                       />
                       {errors.phoneNumber && (
-                        <p className="text-red-600">
-                          {errors.phoneNumber.message}
-                        </p>
+                        <p className="text-red">{errors.phoneNumber.message}</p>
                       )}
                     </div>
                     <div className="mb-5.5">
@@ -145,7 +166,7 @@ export default function Settings() {
                           placeholder="sevens@admin.com"
                         />
                         {errors.emailAddress && (
-                          <p className="text-red-600">
+                          <p className="text-red">
                             {errors.emailAddress.message}
                           </p>
                         )}
@@ -156,9 +177,9 @@ export default function Settings() {
                     {" "}
                     <div className="mb-4 flex items-center gap-3">
                       <div className="max-h-[100px] max-w-[100px]">
-                        {logoUrl && (
+                        {logoUrlValue && (
                           <Image
-                            src={`${logoUrl}`}
+                            src={`${logoUrlValue}`}
                             // src={"https://iili.io/2B8RIyP.png"}
                             alt="logo"
                             layout="responsive"
@@ -182,20 +203,28 @@ export default function Settings() {
                         type="file"
                         accept="image/*"
                         className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
+                        // {...register("logoUrl", {
+                        //   required: "Logo Url is required",
+                        // })}
+                        id="logoUrl"
                         onChange={handleProductImageUpload}
                       />
-                      {!logoUrl && <p className="text-red">Logo is required</p>}
+                      {/* {!logoUrlState && (
+                        <p className="text-red">Logo is required</p>
+                      )} */}
 
                       <div className="flex flex-col items-center justify-center space-y-3">
                         {/* {logo} */}
                         <p>
                           <span className="text-primary">Click to upload</span>{" "}
-                          or drag and drop
                         </p>
                         <p className="mt-1.5">PNG, JPG, SVG, </p>
                         <p>(max, 300 X 300px)</p>
                       </div>
                     </div>
+                    {!logoUrlValue && (
+                      <p className="text-red">Logo is required</p>
+                    )}
                   </div>
                 </div>
 

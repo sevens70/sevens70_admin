@@ -32,7 +32,6 @@ export const loginUserAsync = createAsyncThunk(
     console.log("1234", loginInfo);
     try {
       const response = await loginUser(loginInfo);
-      console.log("response data", response.data?.token);
       if (response.data?.token) {
         sessionStorage.setItem("authToken", response.data.token);
       }

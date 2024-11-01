@@ -116,7 +116,6 @@ export const updateProductAsync = createAsyncThunk(
   "product/update",
   async (update) => {
     const response = await updateProduct(update);
-      toast.success("Product Updated successfully");
     return response.data;
   },
 );

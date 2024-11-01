@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+
 const BASE_URL =
   process.env.NODE_ENV === "production"
     ? "https://xartso-server-xpr7.vercel.app"
@@ -66,9 +68,9 @@ export function createProduct(product) {
   });
 }
 
-export function updateProduct(update) {
+export async function updateProduct(update) {
   const token = sessionStorage.getItem("authToken");
-  return new Promise(async (resolve) => {
+  try {
     const response = await fetch(`${BASE_URL}/products/${update.id}`, {
       method: "PATCH",
       body: JSON.stringify(update),
@@ -78,9 +80,17 @@ export function updateProduct(update) {
       },
       credentials: "include",
     });
-    const data = await response.json();
-    resolve({ data });
-  });
+    if (response.ok) {
+      const data = await response.json();
+      toast.success("Product Updated successfully");
+      return { data, status: response.status };
+    } else {
+      toast.error("Failed to update product");
+    }
+  } catch (error) {
+    console.error("Error in updateProduct:", error);
+    throw error;
+  }
 }
 
 export function fetchProductsByFilters(filter, sort, pagination, admin) {

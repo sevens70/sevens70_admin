@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+
 const BASE_URL =
   process.env.NODE_ENV === "production"
     ? "https://xartso-server-xpr7.vercel.app"
@@ -12,8 +14,12 @@ export function createUser(userData) {
       headers: { "content-type": "application/json" },
       credentials: "include",
     });
-    const data = await response.json();
-    resolve({ data });
+    if (response.ok) {
+      const data = await response.json();
+      resolve({ data });
+    } else {
+      toast.error("Failed to create account");
+    }
   });
 }
 
@@ -31,6 +37,7 @@ export function loginUser(loginInfo) {
         resolve({ data });
       } else {
         const error = await response.text();
+        toast.error("Wrong credentials, check again.");
         reject(error);
       }
     } catch (error) {

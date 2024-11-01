@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+
 const BASE_URL =
   process.env.NODE_ENV === "production"
     ? "https://xartso-server-xpr7.vercel.app"
@@ -20,23 +22,28 @@ export function createOrder(order) {
   });
 }
 
-export function updateOrder(order) {
-  return new Promise(async (resolve) => {
-    const token = sessionStorage.getItem("authToken");
-    const response = await fetch(`${BASE_URL}/orders/${order.id}`, {
-      method: "PATCH",
-      body: JSON.stringify(order),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-    });
-    const data = await response.json();
-    resolve({ data });
+export async function updateOrder(order) {
+  const token = sessionStorage.getItem("authToken");
+  const response = await fetch(`${BASE_URL}/orders/${order.id}`, {
+    method: "PATCH",
+    body: JSON.stringify(order),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    credentials: "include",
   });
-}
 
+  if (response.ok) {
+    toast.success("Order updated successfully");
+    const data = await response.json();
+    return { data };
+  } else {
+    const errorText = await response.text();
+    toast.error("Failed to update order status");
+    throw new Error(errorText);
+  }
+}
 export function fetchAllOrders(sort, pagination) {
   let queryString = "";
 

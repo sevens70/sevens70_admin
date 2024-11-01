@@ -5,14 +5,41 @@ const BASE_URL =
 
 export async function createWebsiteInfo(payload) {
   const token = sessionStorage.getItem("authToken");
-  const response = await fetch(`${BASE_URL}/settings`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(payload),
-    credentials: "include",
+  try {
+    const response = await fetch(`${BASE_URL}/settings`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return { data };
+    } else {
+      const errorText = await response.text();
+      throw new Error(errorText);
+    }
+  } catch (error) {
+    // console.error("Error in createWebsiteInfo:", error.message);
+    throw error;
+  }
+}
+
+export function fetchWebsiteInfo() {
+  const token = sessionStorage.getItem("authToken");
+  return new Promise(async (resolve) => {
+    const response = await fetch(`${BASE_URL}/settings`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+    const data = await response.json();
+    resolve({ data });
   });
-  return response.json();
 }

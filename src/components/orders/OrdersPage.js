@@ -82,7 +82,7 @@ function OrdersPage() {
     const pagination = { _page: page, _limit: ITEMS_PER_PAGE };
     dispatch(fetchAllOrdersAsync({ sort, pagination }));
   }, [dispatch, page, sort]);
-  // ordersStatus;
+
   if (ordersStatus === "loading") {
     return <Loader />;
   }
