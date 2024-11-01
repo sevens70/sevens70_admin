@@ -4,7 +4,7 @@ const BASE_URL =
     : "http://localhost:8080";
 
 export async function createWebsiteInfo(payload) {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   const response = await fetch(`${BASE_URL}/settings`, {
     method: "POST",
     headers: {

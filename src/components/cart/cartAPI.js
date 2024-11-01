@@ -1,6 +1,6 @@
 export function addToCart(item) {
   return new Promise(async (resolve) => {
-    const token = localStorage.getItem("authToken");
+    const token = sessionStorage.getItem("authToken");
     const response = await fetch("/cart", {
       method: "POST",
       body: JSON.stringify(item),
@@ -15,7 +15,7 @@ export function addToCart(item) {
 }
 
 export function fetchItemsByUserId() {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
 
   return new Promise(async (resolve) => {
     const response = await fetch("/cart", {
@@ -33,7 +33,7 @@ export function fetchItemsByUserId() {
 }
 
 export function updateCart(update) {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     const response = await fetch("/cart/" + update.id, {
       method: "PATCH",
@@ -49,7 +49,7 @@ export function updateCart(update) {
 }
 
 export function deleteItemFromCart(itemId) {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     const response = await fetch("/cart/" + itemId, {
       method: "DELETE",

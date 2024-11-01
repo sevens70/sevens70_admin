@@ -42,7 +42,7 @@ export function loginUser(loginInfo) {
 export function checkAuth() {
   return new Promise(async (resolve, reject) => {
     try {
-      const token = localStorage.getItem("authToken");
+      const token = sessionStorage.getItem("authToken");
 
       const response = await fetch(`${BASE_URL}/auth/check`, {
         method: "GET",
@@ -65,7 +65,6 @@ export function checkAuth() {
     }
   });
 }
-
 
 export function signOut() {
   return new Promise(async (resolve, reject) => {

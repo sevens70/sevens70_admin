@@ -4,7 +4,7 @@ const BASE_URL =
     : "http://localhost:8080";
 
 export function fetchLoggedInUserOrders() {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     const response = await fetch(`${BASE_URL}/orders/own/`, {
       headers: {
@@ -19,7 +19,7 @@ export function fetchLoggedInUserOrders() {
 }
 
 export function fetchLoggedInUser() {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     const response = await fetch(`${BASE_URL}/users/own`, {
       headers: {
@@ -34,7 +34,7 @@ export function fetchLoggedInUser() {
 }
 
 export function updateUser(update) {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     const response = await fetch(`${BASE_URL}/users/${update.id}`, {
       method: "PATCH",

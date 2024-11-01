@@ -4,7 +4,7 @@ const BASE_URL =
     : "http://localhost:8080";
 
 export function fetchProductById(id) {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     const response = await fetch(`${BASE_URL}/products/${id}`, {
       headers: {
@@ -19,7 +19,7 @@ export function fetchProductById(id) {
 }
 
 export function fetchAllProducts() {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     const response = await fetch(`${BASE_URL}/products`, {
       headers: {
@@ -34,7 +34,7 @@ export function fetchAllProducts() {
 }
 
 export function fetchAllCategories() {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     const response = await fetch(`${BASE_URL}/categories`, {
       headers: {
@@ -49,7 +49,7 @@ export function fetchAllCategories() {
 }
 
 export function createProduct(product) {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     console.log("12345", product);
     const response = await fetch(`${BASE_URL}/products`, {
@@ -67,7 +67,7 @@ export function createProduct(product) {
 }
 
 export function updateProduct(update) {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     const response = await fetch(`${BASE_URL}/products/${update.id}`, {
       method: "PATCH",
@@ -100,7 +100,7 @@ export function fetchProductsByFilters(filter, sort, pagination, admin) {
   if (admin) {
     queryString += `admin=true`;
   }
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     const response = await fetch(`${BASE_URL}/products?${queryString}`, {
       headers: {
@@ -116,7 +116,7 @@ export function fetchProductsByFilters(filter, sort, pagination, admin) {
 }
 
 export function fetchCategories() {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     const response = await fetch(`${BASE_URL}/categories`, {
       headers: {
@@ -131,7 +131,7 @@ export function fetchCategories() {
 }
 
 export function createSubCategories(payload) {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     console.log("12345", payload);
     const response = await fetch(`${BASE_URL}/categories/add-subcategory`, {
@@ -150,7 +150,7 @@ export function createSubCategories(payload) {
 }
 
 export function fetchBrands() {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   return new Promise(async (resolve) => {
     const response = await fetch(`${BASE_URL}/brands`, {
       headers: {

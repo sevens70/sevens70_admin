@@ -5,7 +5,7 @@ const BASE_URL =
 
 export function createOrder(order) {
   return new Promise(async (resolve) => {
-    const token = localStorage.getItem("authToken");
+    const token = sessionStorage.getItem("authToken");
     const response = await fetch(`${BASE_URL}/orders`, {
       method: "POST",
       body: JSON.stringify(order),
@@ -22,7 +22,7 @@ export function createOrder(order) {
 
 export function updateOrder(order) {
   return new Promise(async (resolve) => {
-    const token = localStorage.getItem("authToken");
+    const token = sessionStorage.getItem("authToken");
     const response = await fetch(`${BASE_URL}/orders/${order.id}`, {
       method: "PATCH",
       body: JSON.stringify(order),
@@ -48,7 +48,7 @@ export function fetchAllOrders(sort, pagination) {
   }
 
   return new Promise(async (resolve) => {
-    const token = localStorage.getItem("authToken");
+    const token = sessionStorage.getItem("authToken");
     const response = await fetch(`${BASE_URL}/orders?${queryString}`, {
       credentials: "include",
       headers: {
