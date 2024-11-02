@@ -46,13 +46,13 @@ const BannerTable = () => {
       </div>
 
       <div className="grid grid-cols-6 border-t border-stroke px-4 py-4.5 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5">
-        <div className="col-span-3 flex items-center">
+        <div className="col-span-2 flex items-center">
           <p className="font-medium">Banner Title</p>
         </div>
-        <div className="col-span-1 hidden items-center sm:flex">
+        <div className="col-span-2 items-center">
           <p className="font-medium">Subtitle</p>
         </div>
-        <div className="col-span-1 flex items-center">
+        <div className="col-span-2 flex items-center">
           <p className="font-medium">Tag</p>
         </div>
         <div className="col-span-1 flex items-center">
@@ -71,7 +71,7 @@ const BannerTable = () => {
               className="grid grid-cols-6 border-t border-stroke px-4 py-4.5 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5"
               key={key}
             >
-              <div className="col-span-3 flex items-center">
+              <div className="col-span-2 flex items-center">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                   <div className="h-12.5 w-15 overflow-hidden rounded-md">
                     <Image
@@ -86,12 +86,12 @@ const BannerTable = () => {
                   </p>
                 </div>
               </div>
-              <div className="col-span-1 hidden items-center sm:flex">
-                <p className="text-sm text-black dark:text-white">
+              <div className="col-span-2  flex flex-col gap-4 sm:flex-row sm:items-center">
+                <p className="pr-5 text-sm text-black dark:text-white">
                   {banner.subtitle}
                 </p>
               </div>
-              <div className="col-span-1 flex items-center">
+              <div className="col-span-2 flex items-center">
                 <p className="text-sm text-black dark:text-white">
                   {banner.tag}
                 </p>
