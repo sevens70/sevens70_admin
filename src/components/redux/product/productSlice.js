@@ -107,7 +107,6 @@ export const createProductAsync = createAsyncThunk(
   "product/create",
   async (product) => {
     const response = await createProduct(product);
-    toast.success("Product Created successfully");
     return response.data;
   },
 );

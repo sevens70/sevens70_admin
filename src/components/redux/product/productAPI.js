@@ -63,8 +63,13 @@ export function createProduct(product) {
       },
       credentials: "include",
     });
-    const data = await response.json();
-    resolve({ data });
+    if (response.ok) {
+      toast.success("Product created successfully");
+      const data = await response.json();
+      resolve({ data });
+    } else {
+      toast.error("Failed to create product");
+    }
   });
 }
 

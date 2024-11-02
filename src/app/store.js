@@ -3,11 +3,13 @@ import authReducer from "../components/redux/auth/authSlice";
 import userReducer from "../components/user/userSlice";
 import orderReducer from "../components/orders/orderSlice";
 import thunk from "redux-thunk";
-import productSlice from "@/components/redux/product/productSlice";
+import productReducer from "@/components/redux/product/productSlice";
 import websiteInfoReducer from "../components/settings/settingsSlice";
+import bannerReducer from "@/components/banners/bannersSlice";
 export const store = configureStore({
   reducer: {
-    product: productSlice,
+    product: productReducer,
+    banner: bannerReducer,
     auth: authReducer,
     // cart: cartReducer,
     order: orderReducer,
