@@ -93,7 +93,7 @@ const BannerTable = () => {
               </div>
               <div className="col-span-1 flex items-center">
                 <p className="text-sm text-black dark:text-white">
-                  ${banner.tag}
+                  {banner.tag}
                 </p>
               </div>
               <div className="col-span-1 flex items-center">

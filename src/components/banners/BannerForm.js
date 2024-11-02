@@ -94,7 +94,12 @@ export default function BannerForm({ title }) {
             <div className="p-7">
               <form
                 onSubmit={handleSubmit((data) => {
-                  setShowImageError(true);
+                  if (!logoUrlValue) {
+                    // toast.error("Choose your banner image.");
+                    setShowImageError(true);
+                    return null;
+                  }
+                  setShowImageError(false);
                   const banner = { ...data };
                   if (params.id) {
                     banner.id = params.id;
@@ -103,7 +108,6 @@ export default function BannerForm({ title }) {
 
                     reset();
                   } else {
-                    console.log("banner 03", banner);
                     dispatch(createBannerAsync(banner));
 
                     reset();
@@ -260,7 +264,7 @@ export default function BannerForm({ title }) {
                   <button
                     className="flex justify-center rounded bg-primary px-6 py-2 font-medium text-gray hover:bg-opacity-90"
                     type="submit"
-                    disabled={!logoUrlValue}
+                    // disabled={!logoUrlValue}
                   >
                     Save
                   </button>
