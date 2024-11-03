@@ -68,7 +68,7 @@ export default function Cart() {
                           <h3>
                             <a href={item.product.id}>{item.product.title}</a>
                           </h3>
-                          <p className="ml-4">${item.product.discountPrice}</p>
+                          <p className="ml-4">৳ {item.product.discountPrice}</p>
                         </div>
                         <p className="text-gray-500 mt-1 text-sm">
                           {item.product.brand}
@@ -125,7 +125,7 @@ export default function Cart() {
           <div className="border-gray-200 border-t px-4 py-6 sm:px-6">
             <div className="text-gray-900 my-2 flex justify-between text-base font-medium">
               <p>Subtotal</p>
-              <p>$ {totalAmount}</p>
+              <p>৳ {totalAmount}</p>
             </div>
             <div className="text-gray-900 my-2 flex justify-between text-base font-medium">
               <p>Total Items in Cart</p>

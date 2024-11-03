@@ -97,7 +97,7 @@ const ProductTable = () => {
               </div>
               <div className="col-span-1 flex items-center">
                 <p className="text-sm text-black dark:text-white">
-                  ${product.price}
+                  ৳ {product.price}
                 </p>
               </div>
               <div className="col-span-1 flex items-center">
