@@ -52,6 +52,19 @@ function ProductForm({ title }) {
     "Women",
     "Accessories",
     "Shop",
+    "Boyes",
+    "Girls",
+    "Electronics",
+    "Appliance",
+    "Kids",
+    "Home & lifestyle",
+    "Health & beuty",
+    "Jewellery",
+    "Sunglass",
+    "Sunglass",
+    "Puja sale",
+    "Eid sale",
+    "Become a seller",
   ]);
   const [createSubCategory, setCreateSubCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");

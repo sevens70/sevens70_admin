@@ -61,6 +61,8 @@ function OrdersPage() {
     switch (status) {
       case "pending":
         return "bg-purple-200 text-purple-600";
+      case "accepted":
+        return "bg-green-400 text-white-600";
       case "dispatched":
         return "bg-yellow-200 text-yellow-600";
       case "delivered":
@@ -210,7 +212,7 @@ function OrdersPage() {
                     </td>
                     <td className="py-3 pr-3 text-center">
                       <div className="flex items-center justify-center">
-                        ${order.totalAmount}
+                        ৳ {order.totalAmount}
                       </div>
                     </td>
                     <td className="px-2 py-3 text-center">
@@ -229,6 +231,7 @@ function OrdersPage() {
                       {order.id === editableOrderId ? (
                         <select onChange={(e) => handleOrderStatus(e, order)}>
                           <option value="pending">Pending</option>
+                          <option value="accepted">Accepted</option>
                           <option value="dispatched">Dispatched</option>
                           <option value="delivered">Delivered</option>
                           <option value="cancelled">Cancelled</option>
