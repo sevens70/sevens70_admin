@@ -16,6 +16,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchCategories } from "../../redux/product/productAPI.js";
 import toast from "react-hot-toast";
+import { selectProductListStatus } from "@/components/banners/bannersSlice.js";
 // const CLOUDINARY_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_NAME;
 
 function ProductForm({ title }) {
@@ -30,6 +31,7 @@ function ProductForm({ title }) {
   const dispatch = useDispatch();
   const params = useParams();
   const selectedProduct = useSelector(selectProductById);
+  const selectedProductStatus = useSelector(selectProductListStatus);
   const productState = useSelector((state) => state.product);
   // const allCategories = useSelector(selectAllCategories);
   const router = useRouter();
@@ -42,6 +44,7 @@ function ProductForm({ title }) {
     "Cool style",
     "Modern look",
   ];
+  const prdType = ["Product", "Trending product", "Top product"];
 
   console.log("productState", productState);
   const [openModal, setOpenModal] = useState(false);
@@ -162,11 +165,12 @@ function ProductForm({ title }) {
       setValue("thumbnail", selectedProduct.thumbnail);
       setValue("model", selectedProduct.model);
       setValue("stock", selectedProduct.stock);
-      // setValue("categor", selectedProduct.stock);
       setValue("image1", selectedProduct.images[0]);
       setValue("image2", selectedProduct.images[1]);
       setValue("image3", selectedProduct.images[2]);
       setValue("brand", selectedProduct.brand);
+      setValue("sku", selectedProduct.sku);
+      setValue("type", selectedProduct.type);
       setValue("category", selectedProduct.category);
       setValue("subcategory", selectedProduct.subcategory);
       setValue(
@@ -339,15 +343,16 @@ function ProductForm({ title }) {
             product.id = params.id;
             product.rating = selectedProduct.rating || 0;
             dispatch(updateProductAsync(product));
-            // toast.success("Product Updated");
-
-            reset();
+            router.push("/products");
           } else {
             dispatch(createProductAsync(product));
             setSelectedCategory("");
             setSelectedSubCategory("");
             // toast.success("Product Created");
-            reset();
+            if (selectedProductStatus === "success") {
+              reset();
+              router.push("/products");
+            }
           }
         })}
       >
@@ -440,6 +445,53 @@ function ProductForm({ title }) {
                 {errors.brand && (
                   <p className="text-red">{errors.brand.message}</p>
                 )}
+              </div>
+              <div className="sm:col-span-6">
+                <label
+                  htmlFor="title"
+                  className="text-gray-900 block text-sm font-medium leading-6"
+                >
+                  SKU
+                </label>
+                <div className="mt-2">
+                  <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
+                    <input
+                      type="text"
+                      {...register("sku", {
+                        // required: "name is required",
+                      })}
+                      id="sku"
+                      // className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
+                      className="w-full rounded-lg border-0 border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-span-full">
+                <label
+                  htmlFor="sku"
+                  className="text-gray-900 block text-sm font-medium leading-6"
+                >
+                  Type
+                </label>
+                <div className="mt-2">
+                  <select
+                    {...register("type", {
+                      // required: "brand is required",
+                    })}
+                    className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  >
+                    <option value="">--choose tyoe--</option>
+                    {prdType?.map((brand) => (
+                      <option key={brand} value={brand}>
+                        {brand}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {/* {errors.type && (
+                  <p className="text-red">{errors.type.message}</p>
+                )} */}
               </div>
               <div className="col-span-full">
                 <label
@@ -862,7 +914,7 @@ function ProductForm({ title }) {
             Cancel
           </button>
 
-          {selectedProduct && !selectedProduct.deleted && (
+          {/* {selectedProduct && !selectedProduct.deleted && (
             <button
               onClick={(e) => {
                 e.preventDefault();
@@ -872,7 +924,7 @@ function ProductForm({ title }) {
             >
               Delete
             </button>
-          )}
+          )} */}
 
           <button
             type="submit"

@@ -184,14 +184,14 @@ export const productSlice = createSlice({
         state.status = "loading";
       })
       .addCase(createProductAsync.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = "success";
         state.products.push(action.payload);
       })
       .addCase(updateProductAsync.pending, (state) => {
         state.status = "loading";
       })
       .addCase(updateProductAsync.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = "success";
         const index = state.products.findIndex(
           (product) => product.id === action.payload.id,
         );
