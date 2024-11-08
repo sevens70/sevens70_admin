@@ -3,12 +3,14 @@ import {
   fetchLoggedInUserOrders,
   updateUser,
   fetchLoggedInUser,
+  fetchAllUsers,
 } from "./userAPI";
 
 const initialState = {
   status: "idle",
   userInfo: null, // this info will be used in case of detailed user info, while auth will
   // only be used for loggedInUser id etc checks
+  users: [],
 };
 
 export const fetchLoggedInUserOrderAsync = createAsyncThunk(
@@ -23,6 +25,14 @@ export const fetchLoggedInUserAsync = createAsyncThunk(
   "user/fetchLoggedInUser",
   async () => {
     const response = await fetchLoggedInUser();
+    return response.data;
+  },
+);
+export const fetchAllUserAsync = createAsyncThunk(
+  "user/fetchAllUser",
+  async () => {
+    const response = await fetchAllUsers();
+    console.log("1234 users all", response);
     return response.data;
   },
 );
@@ -61,6 +71,13 @@ export const userSlice = createSlice({
       .addCase(fetchLoggedInUserAsync.fulfilled, (state, action) => {
         state.status = "idle";
         state.userInfo = action.payload;
+      })
+      .addCase(fetchAllUserAsync.pending, (state) => {
+        state.status = "loading..";
+      })
+      .addCase(fetchAllUserAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.users = action.payload;
       });
   },
 });
@@ -68,5 +85,6 @@ export const userSlice = createSlice({
 export const selectUserOrders = (state) => state.user.userInfo.orders;
 export const selectUserInfo = (state) => state.user.userInfo;
 export const selectUserInfoStatus = (state) => state.user.status;
+export const selectAllUsers = (state) => state.user.users;
 
 export default userSlice.reducer;

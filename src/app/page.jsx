@@ -4,6 +4,7 @@ import { fetchItemsByUserIdAsync } from "@/components/cart/cartSlice";
 import ECommerce from "@/components/Dashboard/E-commerce";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { fetchAllOrdersAsync } from "@/components/orders/orderSlice";
+import { fetchAllUserAsync } from "../components/user/userSlice";
 import {
   checkAuthAsync,
   selectLoggedInUser,
@@ -30,6 +31,7 @@ export default function Home() {
     } else if (user) {
       dispatch(fetchItemsByUserIdAsync());
       dispatch(fetchLoggedInUserAsync());
+      dispatch(fetchAllUserAsync());
       dispatch(fetchAllOrdersAsync({}));
     }
   }, [dispatch, user, router]);

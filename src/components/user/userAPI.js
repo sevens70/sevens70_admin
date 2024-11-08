@@ -32,6 +32,20 @@ export function fetchLoggedInUser() {
     resolve({ data });
   });
 }
+export function fetchAllUsers() {
+  const token = sessionStorage.getItem("authToken");
+  return new Promise(async (resolve) => {
+    const response = await fetch(`${BASE_URL}/users`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+    const data = await response.json();
+    resolve({ data });
+  });
+}
 
 export function updateUser(update) {
   const token = sessionStorage.getItem("authToken");
