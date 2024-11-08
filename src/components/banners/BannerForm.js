@@ -238,8 +238,8 @@ export default function BannerForm({ title }) {
                         <p>
                           <span className="text-primary">Click to upload</span>{" "}
                         </p>
-                        <p className="mt-1.5">PNG, JPG, SVG, </p>
-                        <p>(size, 300 X 490px)</p>
+                        <p className="mt-1.5">PNG, JPG </p>
+                        <p>(size, 300 X 485px)</p>
                       </div>
                     </div>
                     {/* {errors.bannerImage && !logoUrlValue && (

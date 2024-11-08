@@ -219,7 +219,7 @@ export default function Settings() {
                           <span className="text-primary">Click to upload</span>{" "}
                         </p>
                         <p className="mt-1.5">PNG, JPG, SVG, </p>
-                        <p>(max, 300 X 300px)</p>
+                        <p>(max, 135px X 30px)</p>
                       </div>
                     </div>
                     {!logoUrlValue && (
