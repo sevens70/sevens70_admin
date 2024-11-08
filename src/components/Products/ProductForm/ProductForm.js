@@ -64,7 +64,6 @@ function ProductForm({ title }) {
     "Health & beuty",
     "Jewellery",
     "Sunglass",
-    "Sunglass",
     "Puja sale",
     "Eid sale",
     "Become a seller",
