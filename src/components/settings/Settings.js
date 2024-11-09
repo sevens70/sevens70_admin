@@ -76,8 +76,6 @@ export default function Settings() {
       };
 
       const result = await createWebsiteInfo(payload);
-      console.log("API response:", result);
-      toast.success("Data saved successfully");
       dispatch(fetchWebsiteInfoAsync);
     } catch (error) {
       console.error("Error submitting data:", error);
@@ -247,15 +245,6 @@ export default function Settings() {
             </div>
           </div>
         </div>
-        {/* <div className="col-span-5 xl:col-span-6">
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke px-7 py-4 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                Your Logo
-              </h3>
-            </div>
-          </div>
-        </div> */}
       </div>
     </div>
   );

@@ -644,7 +644,7 @@ function ProductForm({ title }) {
                       disabled
                       className="text-body dark:text-bodydark"
                     >
-                      Select your category
+                      Select your sub category
                     </option>
                     {subcategoriesData.map((category, index) => (
                       <option

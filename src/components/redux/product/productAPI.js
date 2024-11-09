@@ -144,6 +144,23 @@ export function fetchCategories() {
     resolve({ data });
   });
 }
+export function fetchSubcategories(category) {
+  const token = sessionStorage.getItem("authToken");
+  return new Promise(async (resolve) => {
+    const response = await fetch(
+      `${BASE_URL}/categories/get-subcategories/${category}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      },
+    );
+    const data = await response.json();
+    resolve({ data });
+  });
+}
 
 export function createSubCategories(payload) {
   const token = sessionStorage.getItem("authToken");
@@ -164,17 +181,17 @@ export function createSubCategories(payload) {
   });
 }
 
-export function fetchBrands() {
-  const token = sessionStorage.getItem("authToken");
-  return new Promise(async (resolve) => {
-    const response = await fetch(`${BASE_URL}/brands`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-    });
-    const data = await response.json();
-    resolve({ data });
-  });
-}
+// export function fetchBrands() {
+//   const token = sessionStorage.getItem("authToken");
+//   return new Promise(async (resolve) => {
+//     const response = await fetch(`${BASE_URL}/brands`, {
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       credentials: "include",
+//     });
+//     const data = await response.json();
+//     resolve({ data });
+//   });
+// }

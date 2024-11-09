@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+
 const BASE_URL =
   process.env.NODE_ENV === "production"
     ? "https://xartso-server-xpr7.vercel.app"
@@ -18,6 +20,7 @@ export async function createWebsiteInfo(payload) {
 
     if (response.ok) {
       const data = await response.json();
+      toast.success("Data saved successfully");
       return { data };
     } else {
       const errorText = await response.text();

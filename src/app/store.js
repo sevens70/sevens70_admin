@@ -6,6 +6,7 @@ import thunk from "redux-thunk";
 import productReducer from "@/components/redux/product/productSlice";
 import websiteInfoReducer from "../components/settings/settingsSlice";
 import bannerReducer from "@/components/banners/bannersSlice";
+import brandReducer from "@/components/brands/brandSlice";
 export const store = configureStore({
   reducer: {
     product: productReducer,
@@ -15,6 +16,7 @@ export const store = configureStore({
     order: orderReducer,
     user: userReducer,
     websiteInfo: websiteInfoReducer,
+    brands: brandReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
 });
