@@ -13,9 +13,11 @@ import {
   selectBrandById,
   allBrands,
   createBrandAsync,
-} from "./brandSlice";
-import { brandsStatus } from "./brandSlice";
-import { deleteBrandByIdAsync } from "./brandSlice";
+  brandsStatus,
+  deleteBrandByIdAsync,
+} from "./brandsSlice";
+// import { brandsStatus } from "./brandSlice";
+// import { deleteBrandByIdAsync } from "./brandSlice";
 import Modal from "../common/ModalFile/Modal";
 export default function BrandsPage() {
   const {

@@ -6,7 +6,7 @@ import thunk from "redux-thunk";
 import productReducer from "@/components/redux/product/productSlice";
 import websiteInfoReducer from "../components/settings/settingsSlice";
 import bannerReducer from "@/components/banners/bannersSlice";
-import brandReducer from "@/components/brands/brandSlice";
+import brandReducer from "@/components/brands/brandsSlice";
 export const store = configureStore({
   reducer: {
     product: productReducer,

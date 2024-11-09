@@ -50,7 +50,7 @@ export const updateBrandAsync = createAsyncThunk(
   },
 );
 
-export const brandSlice = createSlice({
+export const brandsSlice = createSlice({
   name: "brands",
   initialState,
   reducers: {
@@ -117,8 +117,8 @@ export const brandSlice = createSlice({
       });
   },
 });
-export const { clearSelectedBrand } = brandSlice.actions;
+export const { clearSelectedBrand } = brandsSlice.actions;
 export const allBrands = (state) => state.brands?.brands;
 export const brandsStatus = (state) => state.brands?.status;
 export const selectBrandById = (state) => state.brands?.selectedBrand;
-export default brandSlice.reducer;
+export default brandsSlice.reducer;
