@@ -16,8 +16,6 @@ import {
   brandsStatus,
   deleteBrandByIdAsync,
 } from "./brandsSlice";
-// import { brandsStatus } from "./brandSlice";
-// import { deleteBrandByIdAsync } from "./brandSlice";
 import Modal from "../common/ModalFile/Modal";
 export default function BrandsPage() {
   const {
@@ -30,7 +28,6 @@ export default function BrandsPage() {
   } = useForm();
   const dispatch = useDispatch();
   const brands = useSelector(allBrands);
-  const selectedBrand = useSelector(selectBrandById);
   const status = useSelector(brandsStatus);
   const formValues = watch();
   const [logoUrlValue, setLogoUrlValue] = useState("");

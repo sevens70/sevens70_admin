@@ -1,16 +1,10 @@
 "use client";
 import { useForm } from "react-hook-form";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import { useDispatch, useSelector } from "react-redux";
-import { brandsStatus } from "./brandSlice";
-import Modal from "../common/ModalFile/Modal";
-import {
-  fetchCategories,
-  fetchSubcategories,
-} from "../redux/product/productAPI";
+import { fetchCategories } from "../redux/product/productAPI";
 import SubCategoryModal from "../common/ModalFile/SubcategoryModal";
 import {
   createSubCategoriesAsync,
