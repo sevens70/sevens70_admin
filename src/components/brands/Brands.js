@@ -78,8 +78,6 @@ export default function BrandsPage() {
       name: formData.name,
       image: formData.image,
     };
-
-    // const result = await createBrand(payload);
     dispatch(createBrandAsync(payload));
     console.log("API response:", result);
     // dispatch(fetchBrandsAsync);
