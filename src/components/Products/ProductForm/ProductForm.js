@@ -14,10 +14,9 @@ import {
 import ShowWarningToast from "../../utils.js";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { fetchCategories } from "../../redux/product/productAPI.js";
+import { fetchCategories, fetchSubcategories } from "../../redux/product/productAPI.js";
 import toast from "react-hot-toast";
 import { selectProductListStatus } from "@/components/banners/bannersSlice.js";
-// const CLOUDINARY_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_NAME;
 
 function ProductForm({ title }) {
   const {
@@ -68,11 +67,10 @@ function ProductForm({ title }) {
     "Eid sale",
     "Become a seller",
   ]);
-  const [createSubCategory, setCreateSubCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [imgLoader, setImgLoader] = useState(false);
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
   const [subcategoriesData, setSubcategoriesData] = useState([]);
-  const [allCategoriesData, setAllcategoriesData] = useState([]);
   const [productImages, setProductImages] = useState([]);
   // const [thumbnail, setThumbnail] = useState(null);
   //colors should be edited only code wll be sent
@@ -145,15 +143,10 @@ function ProductForm({ title }) {
     } else {
       dispatch(clearSelectedProduct());
     }
-    dispatch(fetchCategoriesAsync());
+    // dispatch(fetchCategoriesAsync());
   }, [params.id, dispatch]);
 
   useEffect(() => {
-    console.log(
-      "123444",
-      selectedProduct?.tags.map((tag) => tag.id),
-      selectedProduct,
-    );
     if (selectedProduct && params.id) {
       setSelectedCategory(selectedProduct.category);
       setSelectedSubCategory(selectedProduct.subcategory);
@@ -184,61 +177,34 @@ function ProductForm({ title }) {
         "colors",
         selectedProduct.colors.map((color) => color?.id),
       );
+      setProductImages(selectedProduct?.images || []);
     }
   }, [selectedProduct, params.id, setValue]);
 
-  console.log("selectedProduct 123", selectedProduct);
   const fetchSubCategoriesData = async () => {
     try {
-      const response = await fetchCategories();
-      setAllcategoriesData(response.data);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
-  useEffect(() => {
-    fetchSubCategoriesData();
-  }, [openModal]);
-
-  useEffect(() => {
-    if (selectedCategory) {
-      const selectedCategoryData = allCategoriesData.find(
-        (category) =>
-          category.name.toLowerCase() === selectedCategory.toLowerCase(),
-      );
-
-      if (selectedCategoryData) {
-        const subcategoryNames = selectedCategoryData.subcategories.map(
+      const response = await fetchSubcategories(selectedCategory);
+      if (response.data?.subcategories?.length > 0) {
+        const subcategoryNames = response.data?.subcategories?.map(
           (sub) => sub.name,
         );
         setSubcategoriesData(subcategoryNames);
       } else {
         setSubcategoriesData([]);
       }
+    } catch (error) {
+      toast.error("Error fetching categories.")
     }
-  }, [selectedCategory, allCategoriesData]);
+  };
+  useEffect(() => {
+    if (selectedCategory) {
+      fetchSubCategoriesData();
+    }
+  }, [selectedCategory]);
 
-  const handleDelete = () => {
-    const product = { ...selectedProduct };
-    product.deleted = true;
-    dispatch(updateProductAsync(product));
-  };
-  const handleSave = () => {
-    let payload = {};
-    if (selectedCategory && createSubCategory) {
-      payload = {
-        categoryName: selectedCategory.toLowerCase(),
-        subcategoryName: createSubCategory.toLowerCase(),
-      };
-    } else {
-      //show toaster message
-    }
-    setOpenModal(false);
-    dispatch(createSubCategoriesAsync(payload));
-    dispatch(fetchCategoriesAsync());
-  };
 
   const handleProductImageUpload = async (e) => {
+    setImgLoader(true);
     const files = e.target.files;
     const formData = new FormData();
     const uploadedImages = [];
@@ -261,10 +227,16 @@ function ProductForm({ title }) {
         uploadedImages.push(data.secure_url);
       } catch (error) {
         console.error("Error uploading image:", error);
+        setImgLoader(false);
         toast.error(`${error.message}`);
       }
     }
-    setProductImages(uploadedImages);
+    if (selectedProduct && params.id) {
+      setProductImages((prevImages) => [...prevImages, ...uploadedImages]);
+    } else {
+      setProductImages(uploadedImages);
+    }
+    setImgLoader(false);
     toast.success("Successfully upload images.");
     // if (uploadedImages?.length) setThumbnail(uploadedImages[0]);
   };
@@ -306,6 +278,11 @@ function ProductForm({ title }) {
   };
   const handleDeleteThumbnail = () => {
     setValue("thumbnail", "");
+  };
+  const handleDeleteImages = (idx) => {
+    setProductImages((prevImages) =>
+      prevImages.filter((_, index) => index !== idx),
+    );
   };
 
   return (
@@ -355,7 +332,7 @@ function ProductForm({ title }) {
           }
         })}
       >
-        <div className="space-y-12 bg-white p-12">
+        <div className="space-y-12 bg-white p-12 dark:border-strokedark dark:bg-boxdark">
           <div className="border-gray-900/10 border-b pb-12">
             <h4 className="text-xl font-semibold text-black dark:text-white">
               {title}
@@ -503,6 +480,7 @@ function ProductForm({ title }) {
                   {colors.map((color) => (
                     <>
                       <input
+                        className="cursor-pointer"
                         type="checkbox"
                         {...register("colors", {})}
                         key={color.id}
@@ -525,6 +503,7 @@ function ProductForm({ title }) {
                   {sizes.map((size) => (
                     <>
                       <input
+                        className="cursor-pointer"
                         type="checkbox"
                         {...register("sizes", {})}
                         key={size.id}
@@ -546,6 +525,7 @@ function ProductForm({ title }) {
                   {tags.map((tag) => (
                     <>
                       <input
+                        className="cursor-pointer"
                         type="checkbox"
                         {...register("tags", {})}
                         key={tag.id}
@@ -557,7 +537,7 @@ function ProductForm({ title }) {
                 </div>
               </div>
 
-              <div className="col-span-full">
+              <div className="sm:col-span-3">
                 <label
                   htmlFor="category"
                   className="text-gray-900 block text-sm font-medium leading-6"
@@ -566,7 +546,7 @@ function ProductForm({ title }) {
                 </label>
                 <div className="relative z-20 bg-transparent dark:bg-form-input">
                   <select
-                  id="category"
+                    id="category"
                     value={selectedCategory}
                     {...register("category", {
                       required: "category is required",
@@ -595,7 +575,7 @@ function ProductForm({ title }) {
                     ))}
                   </select>
 
-                  <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2 pointer-events-none">
+                  <span className="pointer-events-none absolute right-4 top-1/2 z-30 -translate-y-1/2">
                     <svg
                       className="fill-current"
                       width="24"
@@ -643,7 +623,7 @@ function ProductForm({ title }) {
                     <option
                       value=""
                       disabled
-                      className="text-body dark:text-bodydark"
+                      className="text-body dark:text-bodydark "
                     >
                       Select your sub category
                     </option>
@@ -651,14 +631,14 @@ function ProductForm({ title }) {
                       <option
                         key={index}
                         value={`${category}`}
-                        className="text-body dark:text-bodydark"
+                        className="text-body dark:text-bodydark capitalize"
                       >
                         {category}
                       </option>
                     ))}
                   </select>
 
-                  <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2 pointer-events-none">
+                  <span className="pointer-events-none absolute right-4 top-1/2 z-30 -translate-y-1/2">
                     <svg
                       className="fill-current"
                       width="24"
@@ -679,32 +659,7 @@ function ProductForm({ title }) {
                   </span>
                 </div>
               </div>
-              <div className="sm:col-span-3">
-                <label
-                  htmlFor="subcategory"
-                  className="text-gray-900 block text-sm font-medium leading-6"
-                >
-                  {" "}
-                  {selectedCategory
-                    ? `Create Sub Category for ${selectedCategory}`
-                    : "Info: Subcategory create based on category"}
-                </label>
-
-                <div
-                  disabled={selectedCategory?.length > 0 ? false : true}
-                  onClick={(e) => {
-                    // e.preventDefault();
-                    if (selectedCategory) {
-                      setOpenModal(true);
-                    } else {
-                      toast.error("Choose category first.");
-                    }
-                  }}
-                  className="text-grey flex w-full cursor-pointer justify-center rounded bg-whiter p-3 font-medium hover:bg-opacity-90"
-                >
-                  Create Sub-category
-                </div>
-              </div>
+         
 
               <div className="sm:col-span-2">
                 <label
@@ -849,9 +804,22 @@ function ProductForm({ title }) {
                           {formValues?.thumbnail && (
                             <p
                               onClick={handleDeleteThumbnail}
-                              className="bg-red-600 absolute left-30 top-1 cursor-pointer rounded-full bg-red px-2 py-0 text-white"
+                              className="bg-red-600 absolute left-30 top-1 cursor-pointer rounded-full bg-red px-1 py-1 text-white"
                             >
-                              X
+                                <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke-width="1.5"
+                              stroke="currentColor"
+                              class="size-4"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M6 18 18 6M6 6l12 12"
+                              />
+                            </svg>
                             </p>
                           )}
                         </div>
@@ -880,14 +848,74 @@ function ProductForm({ title }) {
                   Upload Product Images
                 </h2>
                 <div className="mt-[-20px]">
-                  <div className="w-full">
-                    <input
-                      className="form-control text-gray-700 border-gray-300 focus:text-gray-700 m-0 mt-8 block w-full rounded border border-solid bg-white bg-clip-padding px-2 py-1.5 text-base font-normal transition ease-in-out focus:border-blue-600 focus:bg-white focus:outline-none"
-                      type="file"
-                      id="formFile"
-                      multiple
-                      onChange={handleProductImageUpload}
-                    />
+                  {imgLoader ? (
+                    <div className="my-5 flex w-full justify-center">
+                      <div role="status">
+                        <svg
+                          aria-hidden="true"
+                          class="text-gray-200 dark:text-gray-600 h-10 w-10 animate-spin fill-blue-600"
+                          viewBox="0 0 100 101"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                            fill="currentColor"
+                          />
+                          <path
+                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                            fill="currentFill"
+                          />
+                        </svg>
+                        <span class="sr-only">Loading...</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-full">
+                      <input
+                        className="form-control text-gray-700 border-gray-300 focus:text-gray-700 m-0 mt-8 block w-full rounded border border-solid bg-white bg-clip-padding px-2 py-1.5 text-base font-normal transition ease-in-out focus:border-blue-600 focus:bg-white focus:outline-none"
+                        type="file"
+                        id="formFile"
+                        multiple
+                        onChange={handleProductImageUpload}
+                      />
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <div className="mt-5 flex gap-3">
+                    {productImages?.map((item, idx) => (
+                      <div className="prd_images__area relative">
+                        <img
+                          src={item}
+                          className="h-[150px] w-[150px] object-cover" // Ensure correct class syntax for width and height
+                          alt="thumbnail"
+                        />
+                        {item && (
+                          <p
+                            onClick={() => handleDeleteImages(idx)}
+                            className="bg-red-600 absolute left-30 top-1 cursor-pointer rounded-full bg-red px-1 py-1 text-white"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke-width="1.5"
+                              stroke="currentColor"
+                              class="size-4"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M6 18 18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </p>
+                        )}
+                      </div>
+
+                      // </div>
+                    ))}
                   </div>
                 </div>
                 {/* <div className="my-5">
@@ -905,7 +933,7 @@ function ProductForm({ title }) {
           </div>
         </div>
 
-        <div className="my-6 flex items-center justify-end gap-x-6 pr-12">
+        <div className="mb-6 mt-3 flex items-center justify-end gap-x-6 pr-12">
           <button
             onClick={() => router.push("/products")}
             type="button"
@@ -934,7 +962,7 @@ function ProductForm({ title }) {
           </button>
         </div>
       </form>
-      {selectedCategory && (
+      {/* {selectedCategory && (
         <SubcategoryModal
           title={`Create sub category for ${selectedCategory}`}
           message=""
@@ -947,7 +975,7 @@ function ProductForm({ title }) {
           showModal={openModal}
           setCreateSubCategory={setCreateSubCategory}
         ></SubcategoryModal>
-      )}
+      )} */}
     </>
   );
 }

@@ -248,7 +248,7 @@ export default function BrandsPage() {
               key={key}
             >
               <div className="col-span-3 items-center sm:flex">
-                <p className="text-sm text-black dark:text-white">
+                <p className="text-sm text-black dark:text-white capitalize">
                   {brand?.name}
                 </p>
               </div>

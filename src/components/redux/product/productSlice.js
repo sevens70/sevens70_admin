@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 const initialState = {
   products: [],
   categories: [],
+  subCategories: [],
   brands: [],
   status: "idle",
   totalItems: 0,
@@ -47,6 +48,7 @@ export const fetchCategoriesAsync = createAsyncThunk(
     }
   },
 );
+
 export const fetchProductsByFiltersAsync = createAsyncThunk(
   "product/fetchProductsByFilters",
   async ({ filter, sort, pagination, admin }) => {
@@ -128,9 +130,12 @@ export const productSlice = createSlice({
       .addCase(createSubCategoriesAsync.pending, (state) => {
         state.status = "loading";
       })
+      .addCase(createSubCategoriesAsync.rejected, (state, action) => {
+        state.status = "failed";
+      })
       .addCase(createSubCategoriesAsync.fulfilled, (state, action) => {
-        state.status = "idle";
-        state.categories = action.payload;
+        state.status = "success";
+        state.subCategories = action.payload?.category;
       })
       .addCase(fetchProductByIdAsync.pending, (state) => {
         state.status = "loading...";
@@ -177,6 +182,7 @@ export const selectAllProducts = (state) => state.product?.products;
 export const selectAllCategories = (state) => state.product?.categories;
 export const selectBrands = (state) => state.product?.brands;
 export const selectCategories = (state) => state.product?.categories;
+export const getAllSubcategories = (state) => state.product?.subCategories;
 export const selectProductById = (state) => state.product?.selectedProduct;
 export const selectProductListStatus = (state) => state.product?.status;
 
