@@ -2,7 +2,7 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Image from "next/image";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import BrandsPage from "../../components/brands/brands";
+import BrandsPage from "../../components/brands/brandPage";
 export const metadata: Metadata = {
   title: "Next.js Settings | Xartso - Next.js Dashboard Template",
   description:
