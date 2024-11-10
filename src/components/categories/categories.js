@@ -4,9 +4,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchSubcategories,
-} from "../redux/product/productAPI";
+import { fetchSubcategories } from "../redux/product/productAPI";
 import SubCategoryModal from "../common/ModalFile/SubcategoryModal";
 import {
   createSubCategoriesAsync,
@@ -54,6 +52,8 @@ export default function CategoriesPage() {
           (sub) => sub.name,
         );
         setSubcategoriesData(subcategoryNames);
+      } else {
+        setSubcategoriesData([]);
       }
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -65,14 +65,15 @@ export default function CategoriesPage() {
     }
   }, [selectedCategory]);
 
-  const handleDelete = () => {
-  };
+  const handleDelete = () => {};
   useEffect(() => {
     if (selectedSubCategoryData?.subcategories?.length > 0) {
       const subcategoryNames = selectedSubCategoryData?.subcategories?.map(
         (sub) => sub.name,
       );
       setSubcategoriesData(subcategoryNames);
+    } else {
+      setSubcategoriesData([]);
     }
   }, [selectedSubCategoryData]);
 
@@ -89,6 +90,7 @@ export default function CategoriesPage() {
     dispatch(fetchCategoriesAsync());
   };
 
+  console.log("subcategoriesData =================", subcategoriesData);
   const onSubmit = async (formData) => {};
 
   return (
@@ -186,10 +188,10 @@ export default function CategoriesPage() {
                                 "Selected sub category event",
                                 e.target.value,
                               );
-                              setSelectedSubCategory(e.target.value); 
+                              setSelectedSubCategory(e.target.value);
                             },
                           })}
-                          className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary`}
+                          className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 !capitalize outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary`}
                         >
                           <option
                             value=""
@@ -202,7 +204,7 @@ export default function CategoriesPage() {
                             <option
                               key={index}
                               value={`${category}`}
-                              className="text-body dark:text-bodydark capitalize"
+                              className="capitalize text-body dark:text-bodydark"
                             >
                               {category}
                             </option>
@@ -244,7 +246,6 @@ export default function CategoriesPage() {
                       <div
                         disabled={selectedCategory?.length > 0 ? false : true}
                         onClick={(e) => {
-                    
                           if (selectedCategory) {
                             setOpenModal(true);
                           } else {

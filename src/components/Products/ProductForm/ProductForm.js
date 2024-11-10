@@ -14,9 +14,13 @@ import {
 import ShowWarningToast from "../../utils.js";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { fetchCategories, fetchSubcategories } from "../../redux/product/productAPI.js";
+import { fetchSubcategories } from "../../redux/product/productAPI.js";
 import toast from "react-hot-toast";
 import { selectProductListStatus } from "@/components/banners/bannersSlice.js";
+import {
+  allBrands,
+  fetchBrandsAsync,
+} from "@/components/brands/brandsSlice.js";
 
 function ProductForm({ title }) {
   const {
@@ -31,23 +35,24 @@ function ProductForm({ title }) {
   const params = useParams();
   const selectedProduct = useSelector(selectProductById);
   const selectedProductStatus = useSelector(selectProductListStatus);
-  const productState = useSelector((state) => state.product);
-  // const allCategories = useSelector(selectAllCategories);
+  const brandList = useSelector(allBrands);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [imgLoader, setImgLoader] = useState(false);
+  const [selectedSubCategory, setSelectedSubCategory] = useState("");
+  const [subcategoriesData, setSubcategoriesData] = useState([]);
+  const [productImages, setProductImages] = useState([]);
   const router = useRouter();
-  const brands = [
-    "Abc Fashion",
-    "squire style",
-    "Nice fashion",
-    "xozo fashion",
-    "style zone",
-    "Cool style",
-    "Modern look",
-  ];
+  // const brands = [
+  //   "Abc Fashion",
+  //   "squire style",
+  //   "Nice fashion",
+  //   "xozo fashion",
+  //   "style zone",
+  //   "Cool style",
+  //   "Modern look",
+  // ];
   const prdType = ["Product", "Trending product", "Top product"];
 
-  console.log("productState", productState);
-  const [openModal, setOpenModal] = useState(false);
-  // const [selectedCategory, setSelectedCategory] = useState("");
   const [categoriesData, setCategoriesData] = useState([
     "Home",
     "Men",
@@ -67,13 +72,7 @@ function ProductForm({ title }) {
     "Eid sale",
     "Become a seller",
   ]);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [imgLoader, setImgLoader] = useState(false);
-  const [selectedSubCategory, setSelectedSubCategory] = useState("");
-  const [subcategoriesData, setSubcategoriesData] = useState([]);
-  const [productImages, setProductImages] = useState([]);
-  // const [thumbnail, setThumbnail] = useState(null);
-  //colors should be edited only code wll be sent
+
   const colors = [
     {
       name: "Light Brown",
@@ -143,7 +142,7 @@ function ProductForm({ title }) {
     } else {
       dispatch(clearSelectedProduct());
     }
-    // dispatch(fetchCategoriesAsync());
+    dispatch(fetchBrandsAsync());
   }, [params.id, dispatch]);
 
   useEffect(() => {
@@ -193,7 +192,7 @@ function ProductForm({ title }) {
         setSubcategoriesData([]);
       }
     } catch (error) {
-      toast.error("Error fetching categories.")
+      toast.error("Error fetching categories.");
     }
   };
   useEffect(() => {
@@ -201,7 +200,6 @@ function ProductForm({ title }) {
       fetchSubCategoriesData();
     }
   }, [selectedCategory]);
-
 
   const handleProductImageUpload = async (e) => {
     setImgLoader(true);
@@ -284,6 +282,9 @@ function ProductForm({ title }) {
       prevImages.filter((_, index) => index !== idx),
     );
   };
+
+  // console.log("brandslist 000", brandList);
+  const brands = brandList?.map((sub) => sub.name);
 
   return (
     <>
@@ -408,11 +409,11 @@ function ProductForm({ title }) {
                     {...register("brand", {
                       required: "brand is required",
                     })}
-                    className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 capitalize outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
                     <option value="">--choose brand--</option>
                     {brands?.map((brand) => (
-                      <option key={brand} value={brand}>
+                      <option className="capitalize" key={brand} value={brand}>
                         {brand}
                       </option>
                     ))}
@@ -618,7 +619,7 @@ function ProductForm({ title }) {
                         setSelectedSubCategory(e.target.value); // Update the selected category state
                       },
                     })}
-                    className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary`}
+                    className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 capitalize outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary`}
                   >
                     <option
                       value=""
@@ -631,7 +632,7 @@ function ProductForm({ title }) {
                       <option
                         key={index}
                         value={`${category}`}
-                        className="text-body dark:text-bodydark capitalize"
+                        className="!capitalize text-body dark:text-bodydark"
                       >
                         {category}
                       </option>
@@ -659,7 +660,6 @@ function ProductForm({ title }) {
                   </span>
                 </div>
               </div>
-         
 
               <div className="sm:col-span-2">
                 <label
@@ -806,20 +806,20 @@ function ProductForm({ title }) {
                               onClick={handleDeleteThumbnail}
                               className="bg-red-600 absolute left-30 top-1 cursor-pointer rounded-full bg-red px-1 py-1 text-white"
                             >
-                                <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke-width="1.5"
-                              stroke="currentColor"
-                              class="size-4"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M6 18 18 6M6 6l12 12"
-                              />
-                            </svg>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="size-4"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M6 18 18 6M6 6l12 12"
+                                />
+                              </svg>
                             </p>
                           )}
                         </div>
