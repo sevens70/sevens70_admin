@@ -1,33 +1,23 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  selectError,
   selectLoggedInUser,
   loginUserAsync,
 } from "../redux/auth/authSlice";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-// export const metadata = {
-//   title: "Next.js SignIn Page | Xartso - Next.js Dashboard Template",
-//   description: "This is Next.js Signin Page Xartso Dashboard Template",
-// };
 
 const SignIn = () => {
   const dispatch = useDispatch();
-  const error = useSelector(selectError);
   const user = useSelector(selectLoggedInUser);
   const router = useRouter();
-  // const user = useSelector(selectLoggedInUser);
-
-  console.log("user1234", user);
-  // let user = false;
-
-  console.log("user1234", user, error);
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = (event) => {
+    event.preventDefault();
+    setShowPassword((prev) => !prev);
+  }
   const {
     register,
     handleSubmit,
@@ -39,6 +29,7 @@ const SignIn = () => {
       router.push("/");
     }
   }, [user, router]);
+
 
   return (
     <>
@@ -203,96 +194,6 @@ const SignIn = () => {
                 Sign In
               </h2>
 
-              {/* =========================== */}
-              {/* <form
-              noValidate
-              onSubmit={handleSubmit((data) => {
-                dispatch(
-                  loginUserAsync({ email: data.email, password: data.password })
-                );
-              })}
-              className="space-y-6"
-            >
-              <div>
-                <label
-                  htmlFor="email"
-                  className="text-gray-900 block text-sm font-medium leading-6"
-                >
-                  Email address
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="email"
-                    {...register('email', {
-                      required: 'email is required',
-                      pattern: {
-                        value: /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi,
-                        message: 'email not valid',
-                      },
-                    })}
-                    type="email"
-                    className="text-gray-900 ring-gray-300 placeholder:text-gray-400 block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                  {errors.email && (
-                  <p className="text-red-500">{errors.email.message}</p>
-                )}
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="password"
-                    className="text-gray-900 block text-sm font-medium leading-6"
-                  >
-                    Password
-                  </label>
-                  <div className="text-sm">
-                    <Link
-                      href="/forgot-password"
-                      className="font-semibold text-indigo-600 hover:text-indigo-500"
-                    >
-                      Forgot password?
-                    </Link>
-                  </div>
-                </div>
-                <div className="mt-2">
-                  <input
-                    id="password"
-                    {...register('password', {
-                      required: 'password is required',
-                    })}
-                    type="password"
-                    className="text-gray-900 ring-gray-300 placeholder:text-gray-400 block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                  {errors.password && (
-                  <p className="text-red-500">{errors.password.message}</p>
-                )}
-                </div>
-                {errors && <p className="text-red-500">{errors || errors.message}</p>}
-              </div>
-
-              <div>
-                <button
-                  type="submit"
-                  className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                  Log in
-                </button>
-              </div>
-            </form>
-
-            <p className="text-gray-500 mt-10 text-center text-sm">
-              Not a member?{" "}
-              <Link
-                href="/signup"
-                className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-              >
-                Create an Account
-              </Link>
-            </p> */}
-              {/* ==================== */}
-
               <form
                 noValidate
                 onSubmit={handleSubmit((data) => {
@@ -357,34 +258,52 @@ const SignIn = () => {
                       {...register("password", {
                         required: "password is required",
                       })}
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder="6+ Characters, 1 Capital letter"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                     {errors.password && (
                       <p className="text-red-500">{errors.password.message}</p>
                     )}
-                    <span className="absolute right-4 top-4">
-                      <svg
-                        className="fill-current"
-                        width="22"
-                        height="22"
-                        viewBox="0 0 22 22"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g opacity="0.5">
+                    <button onClick={togglePasswordVisibility} className="absolute right-4 top-4">
+                      {showPassword ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-6"
+                        >
                           <path
-                            d="M16.1547 6.80626V5.91251C16.1547 3.16251 14.0922 0.825009 11.4797 0.618759C10.0359 0.481259 8.59219 0.996884 7.52656 1.95938C6.46094 2.92188 5.84219 4.29688 5.84219 5.70626V6.80626C3.84844 7.18438 2.33594 8.93751 2.33594 11.0688V17.2906C2.33594 19.5594 4.19219 21.3813 6.42656 21.3813H15.5016C17.7703 21.3813 19.6266 19.525 19.6266 17.2563V11C19.6609 8.93751 18.1484 7.21876 16.1547 6.80626ZM8.55781 3.09376C9.31406 2.40626 10.3109 2.06251 11.3422 2.16563C13.1641 2.33751 14.6078 3.98751 14.6078 5.91251V6.70313H7.38906V5.67188C7.38906 4.70938 7.80156 3.78126 8.55781 3.09376ZM18.1141 17.2906C18.1141 18.7 16.9453 19.8688 15.5359 19.8688H6.46094C5.05156 19.8688 3.91719 18.7344 3.91719 17.325V11.0688C3.91719 9.52189 5.15469 8.28438 6.70156 8.28438H15.2953C16.8422 8.28438 18.1141 9.52188 18.1141 11V17.2906Z"
-                            fill=""
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="size-6"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
                           />
                           <path
-                            d="M10.9977 11.8594C10.5852 11.8594 10.207 12.2031 10.207 12.65V16.2594C10.207 16.6719 10.5508 17.05 10.9977 17.05C11.4102 17.05 11.7883 16.7063 11.7883 16.2594V12.6156C11.7883 12.2031 11.4102 11.8594 10.9977 11.8594Z"
-                            fill=""
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                           />
-                        </g>
-                      </svg>
-                    </span>
+                        </svg>
+                      )}
+
+                    </button>
                   </div>
                 </div>
 
