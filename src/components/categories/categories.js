@@ -213,7 +213,7 @@ export default function CategoriesPage() {
                         ))}
                       </select>
 
-                      <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2">
+                      <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2 pointer-events-none">
                         <svg
                           className="fill-current"
                           width="24"
@@ -276,7 +276,7 @@ export default function CategoriesPage() {
                         ))}
                       </select>
 
-                      <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2">
+                      <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2 pointer-events-none">
                         <svg
                           className="fill-current"
                           width="24"

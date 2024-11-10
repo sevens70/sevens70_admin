@@ -45,7 +45,7 @@ const SelectGroupTwo: React.FC = () => {
               ></path>
             </g>
           </svg>
-        </span>
+        </span> 
 
         <select
           value={selectedOption}
@@ -71,7 +71,7 @@ const SelectGroupTwo: React.FC = () => {
           </option>
         </select>
 
-        <span className="absolute right-4 top-1/2 z-10 -translate-y-1/2">
+        <span className="absolute right-4 top-1/2 z-10 -translate-y-1/2 pointer-events-none">
           <svg
             width="24"
             height="24"

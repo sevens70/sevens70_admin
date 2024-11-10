@@ -298,12 +298,16 @@ function SignUp() {
                       {...register("password", {
                         required: "password is required",
                         pattern: {
-                          value:
-                            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
-                          message: `- at least 8 characters\n
-                          - must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number\n
-                          - Can contain special characters`,
+                          value: /^(?=.*[a-zA-Z]).{6,}$/,
+                          message: `- Must be at least 6 characters\n- Must contain at least 1 letter`,
                         },
+                        // pattern: {
+                        //   value:
+                        //     /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
+                        //   message: `- at least 8 characters\n
+                        //   - must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number\n
+                        //   - Can contain special characters`,
+                        // },
                       })}
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"

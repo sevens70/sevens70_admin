@@ -566,6 +566,7 @@ function ProductForm({ title }) {
                 </label>
                 <div className="relative z-20 bg-transparent dark:bg-form-input">
                   <select
+                  id="category"
                     value={selectedCategory}
                     {...register("category", {
                       required: "category is required",
@@ -594,7 +595,7 @@ function ProductForm({ title }) {
                     ))}
                   </select>
 
-                  <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2">
+                  <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2 pointer-events-none">
                     <svg
                       className="fill-current"
                       width="24"
@@ -657,7 +658,7 @@ function ProductForm({ title }) {
                     ))}
                   </select>
 
-                  <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2">
+                  <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2 pointer-events-none">
                     <svg
                       className="fill-current"
                       width="24"
