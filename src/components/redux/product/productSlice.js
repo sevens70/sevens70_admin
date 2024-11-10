@@ -17,6 +17,7 @@ const initialState = {
   subCategories: [],
   brands: [],
   status: "idle",
+  prdStatus: "",
   totalItems: 0,
   selectedProduct: null,
 };
@@ -156,10 +157,10 @@ export const productSlice = createSlice({
         console.error("error", action.error);
       })
       .addCase(createProductAsync.pending, (state) => {
-        state.status = "loading";
+        state.prdStatus = "loading";
       })
       .addCase(createProductAsync.fulfilled, (state, action) => {
-        state.status = "success";
+        state.prdStatus = "success";
         state.products.push(action.payload);
       })
       .addCase(updateProductAsync.pending, (state) => {
@@ -185,6 +186,7 @@ export const selectCategories = (state) => state.product?.categories;
 export const getAllSubcategories = (state) => state.product?.subCategories;
 export const selectProductById = (state) => state.product?.selectedProduct;
 export const selectProductListStatus = (state) => state.product?.status;
+export const selectProductStatus = (state) => state.product?.prdStatus;
 
 export const selectTotalItems = (state) => state.product?.totalItems;
 

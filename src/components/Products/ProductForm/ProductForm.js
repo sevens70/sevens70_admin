@@ -1,14 +1,15 @@
 "use client";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import SubcategoryModal from "../../common/ModalFile/SubcategoryModal.js";
+// import SubcategoryModal from "../../common/ModalFile/SubcategoryModal.js";
 import {
   clearSelectedProduct,
   createProductAsync,
-  createSubCategoriesAsync,
-  fetchCategoriesAsync,
+  // createSubCategoriesAsync,
+  // fetchCategoriesAsync,
   fetchProductByIdAsync,
   selectProductById,
+  selectProductStatus,
   updateProductAsync,
 } from "../../redux/product/productSlice.js";
 import ShowWarningToast from "../../utils.js";
@@ -16,7 +17,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchSubcategories } from "../../redux/product/productAPI.js";
 import toast from "react-hot-toast";
-import { selectProductListStatus } from "@/components/banners/bannersSlice.js";
+// import { selectProductListStatus } from "@/components/banners/bannersSlice.js";
 import {
   allBrands,
   fetchBrandsAsync,
@@ -34,7 +35,7 @@ function ProductForm({ title }) {
   const dispatch = useDispatch();
   const params = useParams();
   const selectedProduct = useSelector(selectProductById);
-  const selectedProductStatus = useSelector(selectProductListStatus);
+  const selectedProductStatus = useSelector(selectProductStatus);
   const brandList = useSelector(allBrands);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [imgLoader, setImgLoader] = useState(false);
@@ -51,7 +52,7 @@ function ProductForm({ title }) {
   //   "Cool style",
   //   "Modern look",
   // ];
-  const prdType = ["Product", "Trending product", "Top product"];
+  const prdType = ["Product", "Trending product", "Top product", "New arrival"];
 
   const [categoriesData, setCategoriesData] = useState([
     "Home",
@@ -283,6 +284,14 @@ function ProductForm({ title }) {
     );
   };
 
+  useEffect(() => {
+    setSelectedCategory("");
+    setSelectedSubCategory("");
+    if (selectedProductStatus === "success") {
+      reset();
+    }
+  }, [selectedProductStatus]);
+
   // console.log("brandslist 000", brandList);
   const brands = brandList?.map((sub) => sub.name);
 
@@ -323,13 +332,6 @@ function ProductForm({ title }) {
             router.push("/products");
           } else {
             dispatch(createProductAsync(product));
-            setSelectedCategory("");
-            setSelectedSubCategory("");
-            // toast.success("Product Created");
-            if (selectedProductStatus === "success") {
-              reset();
-              router.push("/products");
-            }
           }
         })}
       >
