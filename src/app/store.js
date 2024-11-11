@@ -18,7 +18,7 @@ export const store = configureStore({
     user: userReducer,
     websiteInfo: websiteInfoReducer,
     brands: brandReducer,
-    toBanners: topBannerReducer,
+    topBanner: topBannerReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
 });

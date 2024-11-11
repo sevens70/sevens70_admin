@@ -40,7 +40,7 @@ const BannerTable = () => {
         <h4 className="text-xl font-semibold text-black dark:text-white">
           Top Banners
         </h4>
-        <Link href={`/banner-form`} className="border-stroke">
+        <Link href={`/banner-form`} className="border-stroke font-bold">
           Add new Banner
         </Link>
       </div>

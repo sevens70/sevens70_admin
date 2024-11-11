@@ -42,7 +42,7 @@ export const createTopBannerAsync = createAsyncThunk(
 );
 
 export const topBannerSlice = createSlice({
-  name: "topBanners",
+  name: "topBanner",
   initialState,
   reducers: {
     clearSelectedTopBanner: (state) => {
@@ -55,7 +55,6 @@ export const topBannerSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchTopBannersAsync.fulfilled, (state, action) => {
-        console.log("action payload ===========", action.payload);
         state.status = "idle";
         state.topBanners = action.payload;
       })
@@ -93,8 +92,8 @@ export const topBannerSlice = createSlice({
   },
 });
 export const { clearSelectedTopBanner } = topBannerSlice.actions;
-export const allTopBanner = (state) => state.topBanners?.topBanners;
-export const topBannerStatus = (state) => state.topBanners?.status;
+export const allTopBanner = (state) => state.topBanner?.topBanners;
+export const topBannerStatus = (state) => state.topBanner?.status;
 export const selectTopBannerById = (state) =>
-  state.topBanners?.selectedTopBanner;
+  state.topBanner?.selectedTopBanner;
 export default topBannerSlice.reducer;

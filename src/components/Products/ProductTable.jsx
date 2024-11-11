@@ -42,7 +42,7 @@ const ProductTable = () => {
         <h4 className="text-xl font-semibold text-black dark:text-white">
           Top Products
         </h4>
-        <Link href={`/product-form`} className="border-stroke">
+        <Link href={`/product-form`} className="border-stroke font-bold">
           Add new product
         </Link>
       </div>

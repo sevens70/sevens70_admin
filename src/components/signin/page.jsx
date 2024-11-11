@@ -2,10 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  selectLoggedInUser,
-  loginUserAsync,
-} from "../redux/auth/authSlice";
+import { selectLoggedInUser, loginUserAsync } from "../redux/auth/authSlice";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 
@@ -17,7 +14,7 @@ const SignIn = () => {
   const togglePasswordVisibility = (event) => {
     event.preventDefault();
     setShowPassword((prev) => !prev);
-  }
+  };
   const {
     register,
     handleSubmit,
@@ -26,10 +23,15 @@ const SignIn = () => {
 
   useEffect(() => {
     if (user) {
-      router.push("/");
+      const lastVisitedPath = localStorage.getItem("lastVisitedPath");
+      if (lastVisitedPath) {
+        localStorage.removeItem("lastVisitedPath");
+        router.push(lastVisitedPath)
+      } else {
+        router.push("/");
+      }
     }
   }, [user, router]);
-
 
   return (
     <>
@@ -265,7 +267,10 @@ const SignIn = () => {
                     {errors.password && (
                       <p className="text-red-500">{errors.password.message}</p>
                     )}
-                    <button onClick={togglePasswordVisibility} className="absolute right-4 top-4">
+                    <button
+                      onClick={togglePasswordVisibility}
+                      className="absolute right-4 top-4"
+                    >
                       {showPassword ? (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -302,7 +307,6 @@ const SignIn = () => {
                           />
                         </svg>
                       )}
-
                     </button>
                   </div>
                 </div>

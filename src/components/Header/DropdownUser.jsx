@@ -4,12 +4,15 @@ import Image from "next/image";
 import ClickOutside from "@/components/ClickOutside";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLoggedInUser, signOutAsync } from "../redux/auth/authSlice";
+import { usePathname, useRouter } from "next/navigation";
 
 const DropdownUser = () => {
   const dispatch = useDispatch();
-  const user = useSelector(selectLoggedInUser);
+  // const user = useSelector(selectLoggedInUser);
+  const lastVisitedPath = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const handleLogout = () => {
+    localStorage.setItem('lastVisitedPath', lastVisitedPath);
     dispatch(signOutAsync());
   };
   return (

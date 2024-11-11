@@ -95,7 +95,7 @@ export default function BrandsPage() {
         </h4>
         <button
           onClick={() => setAllowform(!allowForm)}
-          className="border-stroke"
+          className="border-stroke font-bold"
         >
           Add new Brand
         </button>
