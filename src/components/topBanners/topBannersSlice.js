@@ -55,6 +55,7 @@ export const topBannerSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchTopBannersAsync.fulfilled, (state, action) => {
+        console.log("action payload ===========", action.payload);
         state.status = "idle";
         state.topBanners = action.payload;
       })

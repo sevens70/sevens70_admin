@@ -9,14 +9,11 @@ import { useDispatch, useSelector } from "react-redux";
 import ShowWarningToast from "../utils";
 import Link from "next/link";
 import {
-  // fetchBrandsAsync,
-  // selectBrandById,
-  // allBrands,
   createTopBannerAsync,
-  deleteBrandByIdAsync,
   allTopBanner,
   topBannerStatus,
   fetchTopBannersAsync,
+  deleteTopBannerByIdAsync,
 } from "./topBannersSlice";
 import Modal from "../common/ModalFile/Modal";
 export default function TopBannerPage() {
@@ -75,7 +72,7 @@ export default function TopBannerPage() {
     console.log("submit data", formData);
     const payload = {
       name: formData.name,
-      image: formData.image,
+      bannerImage: formData.image,
     };
     dispatch(createTopBannerAsync(payload));
     console.log("API response:", result);
@@ -88,7 +85,7 @@ export default function TopBannerPage() {
       setAllowform(false);
     }
   }, [status]);
-  // console.log("logoUrl Value 000", brands, logoUrlValue);
+  console.log("topBannerStatus Value 000", topBanners, status);
   return (
     <div>
       <div className="flex justify-between bg-white  px-4 py-6 dark:border-strokedark dark:bg-boxdark md:px-6 xl:px-7.5">
@@ -294,7 +291,7 @@ export default function TopBannerPage() {
                   onClick={(e) => {
                     e.preventDefault();
                     // dispatch(fetchProductByIdAsync(product.id));
-                    dispatch(deleteBrandByIdAsync(brand.id));
+                    dispatch(deleteTopBannerByIdAsync(brand.id));
                     setOpenModal(true);
                   }}
                   className="hover:text-primary"
