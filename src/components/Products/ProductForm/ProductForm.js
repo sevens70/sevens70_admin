@@ -285,9 +285,10 @@ function ProductForm({ title }) {
   };
 
   useEffect(() => {
-    setSelectedCategory("");
-    setSelectedSubCategory("");
     if (selectedProductStatus === "success") {
+      setSelectedCategory("");
+      setSelectedSubCategory("");
+      setProductImages([]);
       reset();
     }
   }, [selectedProductStatus]);
