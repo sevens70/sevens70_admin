@@ -196,7 +196,7 @@ function OrdersPage() {
                           </div>
                           <div>
                             {" "}
-                            <p className="whitespace-nowrap">
+                            <p className="whitespace-nowrap capitalize">
                               {item.product.title}
                             </p>
                             <p className="whitespace-nowrap">

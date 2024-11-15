@@ -12,7 +12,7 @@ const DropdownUser = () => {
   const lastVisitedPath = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const handleLogout = () => {
-    localStorage.setItem('lastVisitedPath', lastVisitedPath);
+    localStorage.setItem("lastVisitedPath", lastVisitedPath);
     dispatch(signOutAsync());
   };
   return (
@@ -29,11 +29,12 @@ const DropdownUser = () => {
           <span className="block text-xs">Developer</span>
         </span> */}
 
-        <span className="h-12 w-12 rounded-full">
+        <span className="h-12 w-12 overflow-hidden rounded-full">
           <Image
             width={112}
             height={112}
-            src={"/images/user/user-01.png"}
+            // src={"/images/user/user-01.png"}
+            src={"/images/profile.jpeg"}
             style={{
               width: "auto",
               height: "auto",

@@ -1,13 +1,7 @@
 import Link from "next/link";
 import DarkModeSwitcher from "./DarkModeSwitcher";
-// import DropdownMessage from "./DropdownMessage";
-// import DropdownNotification from "./DropdownNotification";
 import DropdownUser from "./DropdownUser";
 import Image from "next/image";
-import { useSelector } from "react-redux";
-import { selectLoggedInUser } from "../redux/auth/authSlice";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;

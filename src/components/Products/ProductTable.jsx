@@ -85,13 +85,13 @@ const ProductTable = () => {
                       alt="Product"
                     />
                   </div>
-                  <p className="text-sm text-black dark:text-white">
+                  <p className="text-sm capitalize text-black dark:text-white">
                     {product.title}
                   </p>
                 </div>
               </div>
               <div className="col-span-1 hidden items-center sm:flex">
-                <p className="text-sm text-black dark:text-white">
+                <p className="text-sm capitalize text-black dark:text-white">
                   {product.category}
                 </p>
               </div>
@@ -101,7 +101,7 @@ const ProductTable = () => {
                 </p>
               </div>
               <div className="col-span-1 flex items-center">
-                <p className="text-sm text-black dark:text-white">
+                <p className="text-sm capitalize text-black dark:text-white">
                   {product.brand}
                 </p>
               </div>
