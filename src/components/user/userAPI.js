@@ -1,6 +1,6 @@
 const BASE_URL =
   process.env.NODE_ENV === "production"
-    ? "https://xartso-server-xpr7.vercel.app"
+    ? "https://sevens70.vercel.app"
     : "http://localhost:8080";
 
 export function fetchLoggedInUserOrders() {
