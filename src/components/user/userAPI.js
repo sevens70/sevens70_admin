@@ -1,7 +1,4 @@
-const BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://sevens70.vercel.app"
-    : "http://localhost:8080";
+const BASE_URL = process.env.NEXT_PUBLIC_API_ENDPOINT;
 
 export function fetchLoggedInUserOrders() {
   const token = sessionStorage.getItem("authToken");

@@ -1,9 +1,6 @@
 import toast from "react-hot-toast";
 
-const BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://sevens70.vercel.app"
-    : "http://localhost:8080";
+const BASE_URL = process.env.NEXT_PUBLIC_API_ENDPOINT;
 
 export async function createBrand(payload) {
   const token = sessionStorage.getItem("authToken");

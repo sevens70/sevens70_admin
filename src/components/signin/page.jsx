@@ -26,7 +26,7 @@ const SignIn = () => {
       const lastVisitedPath = localStorage.getItem("lastVisitedPath");
       if (lastVisitedPath) {
         localStorage.removeItem("lastVisitedPath");
-        router.push(lastVisitedPath)
+        router.push(lastVisitedPath);
       } else {
         router.push("/");
       }
@@ -356,14 +356,14 @@ const SignIn = () => {
                 Sign in with Google
               </button> */}
 
-                <div className="mt-6 text-center">
+                {/* <div className="mt-6 text-center">
                   <p>
                     Don’t have any account?{" "}
                     <Link href="/auth/signup" className="text-primary">
                       Sign Up
                     </Link>
                   </p>
-                </div>
+                </div> */}
               </form>
             </div>
           </div>
