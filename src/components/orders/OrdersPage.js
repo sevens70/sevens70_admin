@@ -173,7 +173,7 @@ function OrdersPage() {
                 </tr>
               </thead>
               <tbody className="text-gray-600 text-sm font-light">
-                {orders.map((order) => (
+                {orders?.map((order) => (
                   <tr
                     key={order.id}
                     className="border-gray-200 hover:bg-gray-100 border-b"
@@ -311,12 +311,17 @@ function OrdersPage() {
           </div>
         </div>
       </div>
-      <Pagination
-        page={page}
-        setPage={setPage}
-        handlePage={handlePage}
-        totalItems={totalOrders}
-      ></Pagination>
+      {orders?.length === 0 && (
+        <p className="text-xsm text-dark mt-6 text-center">No data found</p>
+      )}
+      {orders?.length > 0 && (
+        <Pagination
+          page={page}
+          setPage={setPage}
+          handlePage={handlePage}
+          totalItems={totalOrders}
+        ></Pagination>
+      )}
     </div>
   );
 }
