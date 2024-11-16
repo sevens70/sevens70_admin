@@ -31,20 +31,48 @@ export async function createTopBanner(payload) {
   }
 }
 
+// export function fetchTopBanners() {
+//   const token = sessionStorage.getItem("authToken");
+//   return new Promise(async (resolve) => {
+//     const response = await fetch(`${BASE_URL}/topbanner`, {
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       credentials: "include",
+//     });
+//     const data = await response.json();
+//     resolve({ data });
+//   });
+// }
 export function fetchTopBanners() {
   const token = sessionStorage.getItem("authToken");
-  return new Promise(async (resolve) => {
-    const response = await fetch(`${BASE_URL}/topbanner`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-    });
-    const data = await response.json();
-    resolve({ data });
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await fetch(`${BASE_URL}/topbanner`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        reject(
+          `Request failed with status ${response.status}: ${errorMessage}`,
+        );
+        return;
+      }
+
+      const data = await response.json();
+      resolve({ data });
+    } catch (error) {
+      reject(`Fetch error: ${error.message}`);
+    }
   });
 }
+
 export function deleteTopBanner(id) {
   const token = sessionStorage.getItem("authToken");
   return new Promise(async (resolve, reject) => {

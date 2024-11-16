@@ -31,9 +31,9 @@ export default function TopBannerPage() {
   const formValues = watch();
   const [logoUrlValue, setLogoUrlValue] = useState("");
   const [allowForm, setAllowform] = useState(false);
+  const [allowSubmit, setAllowSubmit] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [loader, setLoader] = useState(false);
-
   const handleDeleteThumbnail = () => {
     setValue("image", "");
     setLogoUrlValue("");
@@ -69,13 +69,19 @@ export default function TopBannerPage() {
       toast.error("Error uploading image:", error);
     }
   };
-
   useEffect(() => {
     dispatch(fetchTopBannersAsync());
   }, []);
   const handleDelete = () => {
     setOpenModal(false);
     dispatch(fetchTopBannersAsync());
+  };
+  const handleFormSubmit = (data) => {
+    console.log("submit button clicked 00", data);
+    setAllowSubmit(true);
+    if (logoUrlValue) {
+      onSubmit(data);
+    }
   };
 
   const onSubmit = async (formData) => {
@@ -85,8 +91,6 @@ export default function TopBannerPage() {
       bannerImage: formData.image,
     };
     dispatch(createTopBannerAsync(payload));
-    console.log("API response:", result);
-    // dispatch(fetchBrandsAsync);
   };
   useEffect(() => {
     if (status === "success") {
@@ -94,8 +98,9 @@ export default function TopBannerPage() {
       setLogoUrlValue("");
       setAllowform(false);
     }
-  }, [status]);
-  console.log("formValues?.image", formValues?.image);
+  }, [status, allowSubmit]);
+
+  console.log("allowSubmit 000", allowSubmit, status);
   return (
     <div>
       <div className="flex justify-between bg-white  px-4 py-6 dark:border-strokedark dark:bg-boxdark md:px-6 xl:px-7.5">
@@ -119,16 +124,14 @@ export default function TopBannerPage() {
                 </h3>
               </div> */}
               <div className="p-7">
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form>
                   <div className="flex gap-5">
-                    {" "}
                     <div className="w-1/2">
-                      {" "}
                       <label
-                        className="mb-3 block text-sm font-medium text-black dark:text-white"
                         htmlFor="logoUrl"
+                        className="mb-3 block text-sm font-medium text-black dark:text-white"
                       >
-                        Banner Image
+                        Banner Image <span className="text-red">*</span>
                       </label>
                       <div
                         id="logoUrl"
@@ -137,57 +140,47 @@ export default function TopBannerPage() {
                         <input
                           type="file"
                           accept="image/*"
-                          className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
-                          {...register("image", {
-                            required: "banner image is required",
-                          })}
                           id="logoUrl"
                           onChange={handleProductImageUpload}
+                          className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
                         />
-
                         <div className="flex flex-col items-center justify-center space-y-3">
-                          {/* {logo} */}
                           <p>
                             <span className="text-primary">
                               Click to upload
-                            </span>{" "}
+                            </span>
                           </p>
-                          <p className="mt-1.5">PNG, JPG </p>
-                          <p>(max, 2000px X 1500px)</p>
+                          <p className="mt-1.5">
+                            PNG, JPG (max, 2000px X 1500px)
+                          </p>
                         </div>
                       </div>
-                      {errors.image && !logoUrlValue && (
-                        <p className="text-red">{errors.image.message}</p>
+                      {!logoUrlValue && allowSubmit && (
+                        <p className="text-red">Banner image is required</p>
                       )}
-                      {/* {!logoUrlValue && (
-                      <p className="text-red">Logo is required</p>
-                    )} */}
                     </div>
                     <div className="w-1/2">
-                      {" "}
-                      <div className="mb-5.5 ">
+                      <div className="mb-5.5">
                         <label
-                          className="mb-3 block text-sm font-medium text-black dark:text-white"
                           htmlFor="name"
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
                         >
-                          Banner Name
+                          Banner Name <span className="text-red">*</span>
                         </label>
                         <input
-                          className="w-full rounded border border-stroke bg-gray px-4.5 py-3 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                           type="text"
                           name="name"
                           id="name"
                           {...register("name", {
-                            required: "brand name is required",
+                            required: "Banner name is required",
                           })}
-                          placeholder="Enter the brand name"
+                          className="w-full rounded border border-stroke bg-gray px-4.5 py-3 text-black focus:border-primary dark:border-strokedark dark:bg-meta-4 dark:text-white"
+                          placeholder="Enter the banner name"
                         />
                         {errors.name && (
                           <p className="text-red">{errors.name.message}</p>
                         )}
                       </div>
-                      {/* ============== */}
-                      {/* ============== */}
                       <div className="mb-4 flex items-center gap-3">
                         <div className="relative max-h-[100px] max-w-[100px]">
                           {logoUrlValue && (
@@ -260,18 +253,21 @@ export default function TopBannerPage() {
 
                   <div className="flex justify-end gap-4.5">
                     <button
-                      className="flex justify-center rounded border border-stroke px-6 py-2 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                      // type="submit"
+                      type="button"
                       onClick={() => {
                         reset();
-                        setAllowform(false);
+                        setAllowSubmit(false);
                       }}
+                      className="flex justify-center rounded border border-stroke px-6 py-2 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
                     >
                       Cancel
                     </button>
                     <button
+                      type="button"
+                      onClick={() => {
+                        handleSubmit(handleFormSubmit)();
+                      }}
                       className="flex justify-center rounded bg-primary px-6 py-2 font-medium text-gray hover:bg-opacity-90"
-                      type="submit"
                     >
                       Save
                     </button>

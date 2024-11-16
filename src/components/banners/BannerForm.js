@@ -29,10 +29,10 @@ export default function BannerForm({ title }) {
   const dispatch = useDispatch();
   const params = useParams();
   const formValues = watch();
+  const [loader, setLoader] = useState(false);
   // const formValues = watch();
   const selectedBanner = useSelector(selectedBannerById);
   const [logoUrlValue, setLogoUrlValue] = useState("");
-  const [loader, setLoader] = useState(false);
   const [showImgError, setShowImageError] = useState(false);
   const handleBannerImageUpload = async (e) => {
     setLoader(true);
@@ -67,12 +67,10 @@ export default function BannerForm({ title }) {
       toast.error("Error uploading image:", error);
     }
   };
-
   const handleDeleteThumbnail = () => {
     setValue("bannerImage", "");
     setLogoUrlValue("");
   };
-
   useEffect(() => {
     if (params.id) {
       dispatch(fetchBannerByIdAsync(params.id));
@@ -91,8 +89,6 @@ export default function BannerForm({ title }) {
       setLogoUrlValue(selectedBanner.bannerImage);
     }
   }, [selectedBanner, params.id, setValue]);
-
-  console.log("formValues0000000000000000", formValues, logoUrlValue);
   return (
     <div>
       <div className="grid grid-cols-5 gap-8">
@@ -216,10 +212,12 @@ export default function BannerForm({ title }) {
                     </div>
                   </div>
                   <div className="w-1/2">
-                    {" "}
-                    <div className="mb-4 flex items-center gap-3">
-                      <div className="relative max-h-[100px] max-w-[100px] overflow-hidden"></div>
-                    </div>
+                    <label
+                      htmlFor="description"
+                      className="text-gray-900 mb-2 block text-sm font-medium leading-6"
+                    >
+                      Banner image upload <span className="text-red">*</span>
+                    </label>
                     <div
                       id="bannerImage"
                       className="relative mb-5.5 block w-full cursor-pointer appearance-none rounded border border-dashed border-primary bg-gray px-4 py-4 dark:bg-meta-4 sm:py-7.5"
@@ -228,9 +226,10 @@ export default function BannerForm({ title }) {
                         type="file"
                         accept="image/*"
                         className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
-                        {...register("bannerImage", {
-                          required: "banner mage Url is required",
-                        })}
+                        // {...register("bannerImage", {
+                        //   required: "banner mage Url is required",
+                        //   value: logoUrlValue,
+                        // })}
                         id="bannerImage"
                         onChange={handleBannerImageUpload}
                       />
@@ -243,12 +242,12 @@ export default function BannerForm({ title }) {
                         <p>(size, 300 X 485px)</p>
                       </div>
                     </div>
-                    {errors.bannerImage && !logoUrlValue && (
+                    {/* {errors.bannerImage && !logoUrlValue && (
                       <p className="text-red">{errors.bannerImage.message}</p>
-                    )}
-                    {/* {showImgError && !logoUrlValue && (
-                      <p className="text-red">Banner image is required</p>
                     )} */}
+                    {showImgError && !logoUrlValue && (
+                      <p className="text-red">Banner image is required</p>
+                    )}
                     <div className="relative max-h-[100px] max-w-[100px]">
                       {logoUrlValue && (
                         <>
