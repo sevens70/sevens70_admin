@@ -33,6 +33,11 @@ export default function TopBannerPage() {
   const [allowForm, setAllowform] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [loader, setLoader] = useState(false);
+
+  const handleDeleteThumbnail = () => {
+    setValue("image", "");
+    setLogoUrlValue("");
+  };
   const handleProductImageUpload = async (e) => {
     setLoader(true);
     ShowWarningToast("Please wait for uploading...");
@@ -64,6 +69,7 @@ export default function TopBannerPage() {
       toast.error("Error uploading image:", error);
     }
   };
+
   useEffect(() => {
     dispatch(fetchTopBannersAsync());
   }, []);
@@ -89,6 +95,7 @@ export default function TopBannerPage() {
       setAllowform(false);
     }
   }, [status]);
+  console.log("formValues?.image", formValues?.image);
   return (
     <div>
       <div className="flex justify-between bg-white  px-4 py-6 dark:border-strokedark dark:bg-boxdark md:px-6 xl:px-7.5">
@@ -131,15 +138,12 @@ export default function TopBannerPage() {
                           type="file"
                           accept="image/*"
                           className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
-                          // {...register("logoUrl", {
-                          //   required: "Logo Url is required",
-                          // })}
+                          {...register("image", {
+                            required: "banner image is required",
+                          })}
                           id="logoUrl"
                           onChange={handleProductImageUpload}
                         />
-                        {/* {!logoUrlState && (
-                        <p className="text-red">Logo is required</p>
-                      )} */}
 
                         <div className="flex flex-col items-center justify-center space-y-3">
                           {/* {logo} */}
@@ -152,6 +156,9 @@ export default function TopBannerPage() {
                           <p>(max, 2000px X 1500px)</p>
                         </div>
                       </div>
+                      {errors.image && !logoUrlValue && (
+                        <p className="text-red">{errors.image.message}</p>
+                      )}
                       {/* {!logoUrlValue && (
                       <p className="text-red">Logo is required</p>
                     )} */}
@@ -182,16 +189,40 @@ export default function TopBannerPage() {
                       {/* ============== */}
                       {/* ============== */}
                       <div className="mb-4 flex items-center gap-3">
-                        <div className="max-h-[100px] max-w-[100px]">
+                        <div className="relative max-h-[100px] max-w-[100px]">
                           {logoUrlValue && (
-                            <Image
-                              // src={`${logoUrlValue}`}
-                              src={logoUrlValue}
-                              alt="logo"
-                              layout="responsive"
-                              width={100}
-                              height={100}
-                            />
+                            <>
+                              {" "}
+                              <Image
+                                // src={`${logoUrlValue}`}
+                                src={logoUrlValue}
+                                alt="logo"
+                                layout="responsive"
+                                width={100}
+                                height={100}
+                              />
+                              {formValues?.image && (
+                                <p
+                                  onClick={handleDeleteThumbnail}
+                                  className="bg-red-600 absolute left-30 top-1 cursor-pointer rounded-full bg-red px-1 py-1 text-white"
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="size-4"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="M6 18 18 6M6 6l12 12"
+                                    />
+                                  </svg>
+                                </p>
+                              )}
+                            </>
                           )}
                           {loader && (
                             <div className="my-5 flex w-full justify-center">

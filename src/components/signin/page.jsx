@@ -2,13 +2,19 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
-import { selectLoggedInUser, loginUserAsync } from "../redux/auth/authSlice";
+import {
+  selectLoggedInUser,
+  loginUserAsync,
+  authStatus,
+} from "../redux/auth/authSlice";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 
 const SignIn = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectLoggedInUser);
+  const status = useSelector(authStatus);
+  const [isDisabled, setIsDisabled] = useState(false);
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = (event) => {
@@ -22,6 +28,9 @@ const SignIn = () => {
   } = useForm();
 
   useEffect(() => {
+    if (status === "success" || status === "failed") {
+      setIsDisabled(false);
+    }
     if (user) {
       const lastVisitedPath = localStorage.getItem("lastVisitedPath");
       if (lastVisitedPath) {
@@ -199,7 +208,7 @@ const SignIn = () => {
               <form
                 noValidate
                 onSubmit={handleSubmit((data) => {
-                  console.log("data", data);
+                  setIsDisabled(true);
                   dispatch(
                     loginUserAsync({
                       email: data.email,
@@ -314,8 +323,15 @@ const SignIn = () => {
                 <div className="mb-5">
                   <input
                     type="submit"
-                    value="Sign In"
-                    className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
+                    // value="Sign In"
+                    value={isDisabled ? "Signing In.." : "Sign In"}
+                    disabled={isDisabled}
+                    // className=""
+                    className={`w-full  rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 ${
+                      isDisabled
+                        ? "cursor-not-allowed opacity-50"
+                        : "cursor-pointer"
+                    }`}
                   />
                 </div>
 

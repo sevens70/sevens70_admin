@@ -116,11 +116,11 @@ export const authSlice = createSlice({
         state.status = "loading";
       })
       .addCase(loginUserAsync.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = "success";
         state.loggedInUserToken = action.payload;
       })
       .addCase(loginUserAsync.rejected, (state, action) => {
-        state.status = "idle";
+        state.status = "failed";
         state.error = action.payload;
       })
       .addCase(signOutAsync.pending, (state) => {
@@ -165,6 +165,7 @@ export const authSlice = createSlice({
 
 export const selectLoggedInUser = (state) => state.auth.loggedInUserToken;
 export const selectError = (state) => state.auth.error;
+export const authStatus = (state) => state.auth?.status;
 export const selectUserChecked = (state) => state.auth.userChecked;
 export const selectMailSent = (state) => state.auth.mailSent;
 export const selectPasswordReset = (state) => state.auth.passwordReset;
