@@ -16,6 +16,7 @@ import {
   deleteTopBannerByIdAsync,
 } from "./topBannersSlice";
 import Modal from "../common/ModalFile/Modal";
+import Loader from "../common/Loader";
 export default function TopBannerPage() {
   const {
     register,
@@ -100,7 +101,9 @@ export default function TopBannerPage() {
     }
   }, [status, allowSubmit]);
 
-  console.log("allowSubmit 000", allowSubmit, status);
+  if (status === "loading") {
+    return <Loader />;
+  }
   return (
     <div>
       <div className="flex justify-between bg-white  px-4 py-6 dark:border-strokedark dark:bg-boxdark md:px-6 xl:px-7.5">

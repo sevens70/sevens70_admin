@@ -25,7 +25,7 @@ export const websiteInfoSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchWebsiteInfoAsync.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = "success";
         state.websiteInfo = action.payload;
       });
   },

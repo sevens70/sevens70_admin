@@ -35,24 +35,35 @@ export function fetchAllBanner() {
 export function createBanner(banner) {
   console.log("banner 05", banner);
   const token = sessionStorage.getItem("authToken");
-  return new Promise(async (resolve) => {
+  return new Promise(async (resolve, reject) => {
     console.log("12345", banner);
-    const response = await fetch(`${BASE_URL}/banner`, {
-      method: "POST",
-      body: JSON.stringify(banner),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-    });
+    try {
+      const response = await fetch(`${BASE_URL}/banner`, {
+        method: "POST",
+        body: JSON.stringify(banner),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      });
 
-    if (response.ok) {
-      toast.success("Banner created successfully");
-      const data = await response.json();
-      resolve({ data });
-    } else {
-      toast.error("Failed to create banner");
+      if (response.ok) {
+        toast.success("Banner created successfully");
+        const data = await response.json();
+        resolve({ data });
+      } else {
+        const errorData = await response.json();
+        toast.error("Failed to create banner");
+        reject(
+          new Error(
+            `Request failed with status ${response.status}: ${errorData.message || "Unknown error"}`,
+          ),
+        );
+      }
+    } catch (error) {
+      toast.error("An error occurred while creating the banner");
+      reject(error); // Handle network errors
     }
   });
 }

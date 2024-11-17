@@ -4,6 +4,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import {
+  bannerStatus,
   clearSelectedBanner,
   createBannerAsync,
   fetchBannerByIdAsync,
@@ -30,8 +31,10 @@ export default function BannerForm({ title }) {
   const params = useParams();
   const formValues = watch();
   const [loader, setLoader] = useState(false);
+  const [allowDisable, setAllowDisable] = useState(false);
   // const formValues = watch();
   const selectedBanner = useSelector(selectedBannerById);
+  const status = useSelector(bannerStatus);
   const [logoUrlValue, setLogoUrlValue] = useState("");
   const [showImgError, setShowImageError] = useState(false);
   const handleBannerImageUpload = async (e) => {
@@ -89,6 +92,17 @@ export default function BannerForm({ title }) {
       setLogoUrlValue(selectedBanner.bannerImage);
     }
   }, [selectedBanner, params.id, setValue]);
+  useEffect(() => {
+    if (status === "success") {
+      reset();
+      setLogoUrlValue("");
+      setAllowDisable(false);
+    }
+    if (status === "failed") {
+      setAllowDisable(false);
+    }
+  }, [status]);
+
   return (
     <div>
       <div className="grid grid-cols-5 gap-8">
@@ -102,9 +116,11 @@ export default function BannerForm({ title }) {
             <div className="p-7">
               <form
                 onSubmit={handleSubmit((data) => {
+                  setAllowDisable(true);
                   if (!logoUrlValue) {
                     // toast.error("Choose your banner image.");
                     setShowImageError(true);
+                    setAllowDisable(false);
                     return null;
                   }
                   setShowImageError(false);
@@ -118,8 +134,8 @@ export default function BannerForm({ title }) {
                   } else {
                     dispatch(createBannerAsync(banner));
 
-                    reset();
-                    setLogoUrlValue("");
+                    // reset();
+                    // setLogoUrlValue("");
                   }
                 })}
               >
@@ -321,11 +337,15 @@ export default function BannerForm({ title }) {
                     Cancel
                   </button>
                   <button
-                    className="flex justify-center rounded bg-primary px-6 py-2 font-medium text-gray hover:bg-opacity-90"
                     type="submit"
-                    // disabled={!logoUrlValue}
+                    disabled={allowDisable}
+                    className={`flex justify-center rounded bg-primary px-6 py-2 font-medium text-gray hover:bg-opacity-90 ${
+                      allowDisable
+                        ? "cursor-not-allowed opacity-50"
+                        : "cursor-pointer"
+                    }`}
                   >
-                    Save
+                    {allowDisable ? "Saving.." : "Save"}
                   </button>
                 </div>
               </form>

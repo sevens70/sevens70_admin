@@ -77,11 +77,17 @@ export const bannerSlice = createSlice({
         state.status = "loading";
       })
       .addCase(createBannerAsync.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = "success";
         state.banners.push(action.payload);
+      })
+      .addCase(createBannerAsync.rejected, (state, action) => {
+        state.status = "failed";
       })
       .addCase(updateBannerAsync.pending, (state) => {
         state.status = "loading";
+      })
+      .addCase(updateBannerAsync.rejected, (state, action) => {
+        state.status = "failed";
       })
       .addCase(updateBannerAsync.fulfilled, (state, action) => {
         state.status = "idle";
@@ -98,7 +104,7 @@ export const { clearSelectedBanner } = bannerSlice.actions;
 
 export const selectAllBanner = (state) => state.banner?.banners;
 export const selectedBannerById = (state) => state.banner?.selectedBanner;
-export const selectProductListStatus = (state) => state.banner?.status;
+export const bannerStatus = (state) => state.banner?.status;
 
 export const selectBannerTotalItems = (state) => state.banner?.totalItems;
 
