@@ -7,11 +7,11 @@ import Image from "next/image";
 import SidebarItem from "@/components/Sidebar/SidebarItem";
 import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
-
-interface SidebarProps {
-  sidebarOpen: boolean;
-  setSidebarOpen: (arg: boolean) => void;
-}
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchWebsiteInfoAsync,
+  selectWebsiteInfo,
+} from "../settings/settingsSlice";
 
 const menuGroups = [
   {
@@ -249,16 +249,21 @@ const menuGroups = [
   },
 ];
 
-const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
+const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
+  const dispatch = useDispatch();
   const pathname = usePathname();
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
+  const websiteInfo = useSelector(selectWebsiteInfo);
   // pathname.includes("/orders")
   // useEffect(() => {
   //   if (pathname.includes("/orders")) {
   //     setSidebarOpen(true);
   //   }
   // }, [pathname]);
-  console.log("sidebarOpen", sidebarOpen);
+  useEffect(() => {
+    dispatch(fetchWebsiteInfoAsync());
+  }, []);
+  console.log("sidebarOpen", sidebarOpen, websiteInfo);
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>
       <aside
@@ -273,8 +278,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               width={176}
               height={32}
               className=" rounded bg-gray-2"
-              src="https://iili.io/2B8RIyP.png"
-              // src={"/images/logo/logo.svg"}
+              // src="https://iili.io/2B8RIyP.png"
+              src={websiteInfo?.[0]?.logoUrl}
               alt="Logo"
               priority
             />

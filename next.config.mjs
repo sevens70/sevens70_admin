@@ -13,6 +13,10 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "*.cloudinary.com", // Allow all subdomains of cloudinary.com
+      },
+      {
+        protocol: "https",
         hostname: "**", // Allows images from any other host
       },
     ],
