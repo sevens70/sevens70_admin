@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import {
   createBanner,
-  fetchAllBanner,
+  fetchAllBanners,
   fetchBannerById,
   updateBanner,
 } from "./bannersAPI";
@@ -24,7 +24,7 @@ export const fetchBannerByIdAsync = createAsyncThunk(
 export const fetchAllBannerAsync = createAsyncThunk(
   "banner/allBanner",
   async () => {
-    const response = await fetchAllBanner();
+    const response = await fetchAllBanners();
     return response.data;
   },
 );
@@ -59,14 +59,14 @@ export const bannerSlice = createSlice({
         state.status = "loading...";
       })
       .addCase(fetchBannerByIdAsync.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = "success";
         state.selectedBanner = action.payload;
       })
       .addCase(fetchAllBannerAsync.pending, (state) => {
         state.status = "loading";
       })
       .addCase(fetchAllBannerAsync.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = "success";
         state.banners = action.payload.banner;
       })
       .addCase(fetchAllBannerAsync.rejected, (state, action) => {
@@ -90,7 +90,7 @@ export const bannerSlice = createSlice({
         state.status = "failed";
       })
       .addCase(updateBannerAsync.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = "success";
         const index = state.banners.findIndex(
           (banner) => banner.id === action.payload.id,
         );

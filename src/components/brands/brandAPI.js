@@ -1,9 +1,11 @@
 import toast from "react-hot-toast";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_ENDPOINT;
+const getAuthToken = () => sessionStorage.getItem("authToken");
 
+// Create a new brand
 export async function createBrand(payload) {
-  const token = sessionStorage.getItem("authToken");
+  const token = getAuthToken();
   try {
     const response = await fetch(`${BASE_URL}/brands`, {
       method: "POST",
@@ -14,26 +16,28 @@ export async function createBrand(payload) {
       body: JSON.stringify(payload),
       credentials: "include",
     });
-    console.log("data for brands 00000000 90909", response);
+
     if (response.ok) {
       const data = await response.json();
-      toast.success("Brand is created successfully.");
+      toast.success("Brand created successfully.");
       return { data };
     } else {
       const errorText = await response.text();
-      console.log("errortext", errorText);
+      console.error("Error response:", errorText);
       toast.error("Failed to create brand.");
-      // throw new Error(errorText);
+      throw new Error(errorText);
     }
   } catch (error) {
-    // console.error("Error in createWebsiteInfo:", error.message);
+    console.error("Error creating brand:", error.message);
+    toast.error("An error occurred while creating the brand.");
     throw error;
   }
 }
 
-export function fetchBrands() {
-  const token = sessionStorage.getItem("authToken");
-  return new Promise(async (resolve) => {
+// Fetch all brands
+export async function fetchBrands() {
+  const token = getAuthToken();
+  try {
     const response = await fetch(`${BASE_URL}/brands`, {
       headers: {
         "Content-Type": "application/json",
@@ -41,41 +45,54 @@ export function fetchBrands() {
       },
       credentials: "include",
     });
-    const data = await response.json();
-    resolve({ data });
-  });
-}
-export function deleteBrand(id) {
-  const token = sessionStorage.getItem("authToken");
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await fetch(`${BASE_URL}/brands/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        reject(errorData);
-      }
 
+    if (response.ok) {
       const data = await response.json();
-      resolve({ data });
-    } catch (err) {
-      reject({
-        message: "An error occurred while deleting the brand",
-        error: err,
-      });
+      return { data };
+    } else {
+      const errorText = await response.text();
+      console.error("Error response:", errorText);
+      throw new Error("Failed to fetch brands.");
     }
-  });
+  } catch (error) {
+    console.error("Error fetching brands:", error.message);
+    throw error;
+  }
 }
 
-export function fetchBrandById(id) {
-  const token = sessionStorage.getItem("authToken");
-  return new Promise(async (resolve) => {
+// Delete a brand
+export async function deleteBrand(id) {
+  const token = getAuthToken();
+  try {
+    const response = await fetch(`${BASE_URL}/brands/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      // toast.success("Brand deleted successfully.");
+      return { data };
+    } else {
+      const errorData = await response.json();
+      console.error("Error response:", errorData);
+      toast.error("Failed to delete brand.");
+      throw new Error(errorData.message || "Unknown error.");
+    }
+  } catch (error) {
+    console.error("Error deleting brand:", error.message);
+    throw error;
+  }
+}
+
+// Fetch a single brand by ID
+export async function fetchBrandById(id) {
+  const token = getAuthToken();
+  try {
     const response = await fetch(`${BASE_URL}/brands/${id}`, {
       headers: {
         "Content-Type": "application/json",
@@ -83,31 +100,47 @@ export function fetchBrandById(id) {
       },
       credentials: "include",
     });
-    const data = await response.json();
-    resolve({ data });
-  });
+
+    if (response.ok) {
+      const data = await response.json();
+      return { data };
+    } else {
+      const errorText = await response.text();
+      console.error("Error response:", errorText);
+      throw new Error("Failed to fetch brand by ID.");
+    }
+  } catch (error) {
+    console.error("Error fetching brand by ID:", error.message);
+    throw error;
+  }
 }
+
+// Update an existing brand
 export async function updateBrand(update) {
-  const token = sessionStorage.getItem("authToken");
+  const token = getAuthToken();
   try {
     const response = await fetch(`${BASE_URL}/brands/${update.id}`, {
       method: "PATCH",
-      body: JSON.stringify(update),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify(update),
       credentials: "include",
     });
+
     if (response.ok) {
       const data = await response.json();
-      toast.success("Brand Updated successfully");
-      return { data, status: response.status };
+      toast.success("Brand updated successfully.");
+      return { data };
     } else {
-      toast.error("Failed to update brand");
+      const errorText = await response.text();
+      console.error("Error response:", errorText);
+      toast.error("Failed to update brand.");
+      throw new Error(errorText);
     }
   } catch (error) {
-    console.error("Error in update brand:", error);
+    console.error("Error updating brand:", error.message);
     throw error;
   }
 }

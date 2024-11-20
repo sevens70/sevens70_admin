@@ -13,17 +13,16 @@ export default function DefaultLayout({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const user = useSelector(selectLoggedInUser);
+  const authData = sessionStorage.getItem("authData");
   const router = useRouter();
 
   const pathname = usePathname();
   useEffect(() => {
-    const authData = sessionStorage.getItem("authData");
     console.log("authData & user", authData, user);
-
     if (!user && !authData) {
       router.push("/auth/signin");
     }
-  }, [user, router]);
+  }, [user, router, authData]);
 
   return (
     <>

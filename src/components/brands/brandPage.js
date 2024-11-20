@@ -10,7 +10,6 @@ import ShowWarningToast from "../utils";
 import Link from "next/link";
 import {
   fetchBrandsAsync,
-  selectBrandById,
   allBrands,
   createBrandAsync,
   brandsStatus,
@@ -36,6 +35,7 @@ export default function BrandsPage() {
   const [openModal, setOpenModal] = useState(false);
   const [loader, setLoader] = useState(false);
   const [allowSubmit, setAllowSubmit] = useState(false);
+  const [selectedBrandId, setSelectedBrnadId] = useState(null);
   const handleDeleteThumbnail = () => {
     setValue("image", "");
     setLogoUrlValue("");
@@ -76,8 +76,9 @@ export default function BrandsPage() {
     dispatch(fetchBrandsAsync());
   }, []);
   const handleDelete = () => {
+    dispatch(deleteBrandByIdAsync(selectedBrandId));
     setOpenModal(false);
-    dispatch(fetchBrandsAsync());
+    // dispatch(fetchBrandsAsync());
   };
 
   const onSubmit = async (formData) => {
@@ -93,6 +94,7 @@ export default function BrandsPage() {
   };
   useEffect(() => {
     if (status === "success") {
+      dispatch(fetchBrandsAsync());
       reset();
       setLogoUrlValue("");
       setAllowform(false);
@@ -364,7 +366,8 @@ export default function BrandsPage() {
                   onClick={(e) => {
                     e.preventDefault();
                     // dispatch(fetchProductByIdAsync(product.id));
-                    dispatch(deleteBrandByIdAsync(brand.id));
+                    setSelectedBrnadId(brand.id);
+                    // dispatch(deleteBrandByIdAsync(brand.id));
                     setOpenModal(true);
                   }}
                   className="hover:text-primary"
@@ -433,7 +436,10 @@ export default function BrandsPage() {
           dangerOption="Delete"
           cancelOption="Cancel"
           dangerAction={handleDelete}
-          cancelAction={() => setOpenModal(false)}
+          cancelAction={() => {
+            setSelectedBrnadId(null);
+            setOpenModal(false);
+          }}
           showModal={openModal}
         ></Modal>
       )}

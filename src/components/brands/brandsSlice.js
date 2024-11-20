@@ -20,14 +20,7 @@ export const fetchBrandsAsync = createAsyncThunk(
     return response.data;
   },
 );
-export const fetchBrandByIdAsync = createAsyncThunk(
-  "brand/fetchBrandById",
-  async (id) => {
-    const response = await fetchBrandById(id);
-    // The value we return becomes the `fulfilled` action payload
-    return response.data;
-  },
-);
+
 export const deleteBrandByIdAsync = createAsyncThunk(
   "brand/deleteBrandById",
   async (id) => {
@@ -67,18 +60,12 @@ export const brandsSlice = createSlice({
         state.status = "idle";
         state.brands = action.payload;
       })
-      .addCase(fetchBrandByIdAsync.pending, (state) => {
-        state.status = "loading...";
-      })
-      .addCase(fetchBrandByIdAsync.fulfilled, (state, action) => {
-        state.status = "idle";
-        state.selectedBrand = action.payload;
-      })
+
       .addCase(deleteBrandByIdAsync.pending, (state) => {
         state.status = "loading...";
       })
       .addCase(deleteBrandByIdAsync.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = "success";
         state.brands = state.brands.filter(
           (brand) => brand.id !== action.payload.id,
         );
