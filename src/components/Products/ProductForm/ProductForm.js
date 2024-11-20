@@ -303,7 +303,7 @@ function ProductForm({ title }) {
         onSubmit={handleSubmit((data) => {
           const product = { ...data };
           product.images = [...productImages];
-          product.images.push(product.thumbnail);
+          // product.images.push(product.thumbnail);
           // product.thumbnail = thumbnail;
           product.rating = 0;
           if (product.colors) {
@@ -329,6 +329,7 @@ function ProductForm({ title }) {
           if (params.id) {
             product.id = params.id;
             product.rating = selectedProduct.rating || 0;
+            console.log("product 00000000000000000", product);
             dispatch(updateProductAsync(product));
             router.push("/products");
           } else {

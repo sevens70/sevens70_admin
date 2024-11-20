@@ -18,6 +18,7 @@ export default function DefaultLayout({
   const pathname = usePathname();
   useEffect(() => {
     const authData = sessionStorage.getItem("authData");
+    console.log("authData & user", authData, user);
 
     if (!user && !authData) {
       router.push("/auth/signin");
