@@ -11,3 +11,5 @@ export default function ShowWarningToast(message) {
     },
   });
 }
+
+export const getAuthToken = () => sessionStorage.getItem("authToken");

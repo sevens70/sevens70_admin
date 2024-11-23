@@ -14,19 +14,23 @@ import { fetchLoggedInUserAsync } from "@/components/user/userSlice";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { getAuthToken } from "@/components/utils";
 
 export default function Home() {
   const router = useRouter();
+  const token = getAuthToken();
   const user = useSelector(selectLoggedInUser);
   const dispatch = useDispatch();
   // const user = useSelector(selectLoggedInUser);
   const userChecked = useSelector(selectUserChecked);
   useEffect(() => {
-    dispatch(checkAuthAsync());
-  }, [dispatch]);
+    if (token !== null) {
+      dispatch(checkAuthAsync());
+    }
+  }, [dispatch, token]);
 
   useEffect(() => {
-    if (user === null) {
+    if (token === null) {
       router.push("/auth/signin");
     } else if (user) {
       dispatch(fetchItemsByUserIdAsync());
@@ -34,7 +38,7 @@ export default function Home() {
       dispatch(fetchAllUserAsync());
       dispatch(fetchAllOrdersAsync({}));
     }
-  }, [dispatch, user, router]);
+  }, [dispatch, user, router, token]);
   console.log("user 1234", user);
 
   return (

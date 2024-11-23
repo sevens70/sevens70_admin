@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
+import { getAuthToken } from "../utils";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_ENDPOINT;
-const getAuthToken = () => sessionStorage.getItem("authToken");
 
 // Create a new brand
 export async function createBrand(payload) {
