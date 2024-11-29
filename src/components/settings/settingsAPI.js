@@ -1,45 +1,36 @@
+import axiosInstance from "../../lib/axiosInstance";
+
 import toast from "react-hot-toast";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_ENDPOINT;
-
 export async function createWebsiteInfo(payload) {
-  const token = sessionStorage.getItem("authToken");
   try {
-    const response = await fetch(`${BASE_URL}/settings`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-      credentials: "include",
+    const response = await axiosInstance.post("/settings", payload, {
+      withCredentials: true, // Ensures cookies are sent
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      toast.success("Data saved successfully");
-      return { data };
-    } else {
-      const errorText = await response.text();
-      throw new Error(errorText);
-    }
+    // Handle success
+    toast.success("Data saved successfully");
+    return { data: response.data };
   } catch (error) {
-    // console.error("Error in createWebsiteInfo:", error.message);
-    throw error;
+    // Handle error
+    const errorMessage = error.response?.data?.message || "An error occurred";
+    toast.error(errorMessage);
+    throw new Error(errorMessage);
   }
 }
 
-export function fetchWebsiteInfo() {
-  const token = sessionStorage.getItem("authToken");
-  return new Promise(async (resolve) => {
-    const response = await fetch(`${BASE_URL}/settings`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
+export async function fetchWebsiteInfo() {
+  try {
+    const response = await axiosInstance.get("/settings", {
+      withCredentials: true, // Ensures cookies are sent
     });
-    const data = await response.json();
-    resolve({ data });
-  });
+
+    // Resolve the data
+    return { data: response.data };
+  } catch (error) {
+    // Handle error
+    const errorMessage = error.response?.data?.message || "An error occurred";
+    toast.error(errorMessage);
+    throw new Error(errorMessage);
+  }
 }

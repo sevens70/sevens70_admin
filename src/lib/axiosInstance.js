@@ -1,3 +1,4 @@
+import { getAuthToken } from "@/components/utils";
 import axios from "axios";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_ENDPOINT;
@@ -11,7 +12,9 @@ const axiosInstance = axios.create({
 // Add a request interceptor
 axiosInstance.interceptors.request.use(
   function (config) {
-    const token = localStorage.getItem("authToken"); // Retrieve auth token from localStorage
+    // const token = localStorage.getItem("authToken");
+    const token = getAuthToken();
+    console.log("token 1223", token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -25,7 +28,7 @@ axiosInstance.interceptors.request.use(
   },
   function (error) {
     return Promise.reject(error); // Log or handle errors if needed
-  }
+  },
 );
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -35,7 +38,7 @@ axiosInstance.interceptors.response.use(
       toast.error("A network error occurred. Please try again.");
     }
     return Promise.reject(error); // Ensure other errors are still thrown
-  }
+  },
 );
 
 // Add a response interceptor (Optional)
@@ -47,7 +50,7 @@ axiosInstance.interceptors.response.use(
       // Optionally, redirect to login or refresh token
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axiosInstance;
