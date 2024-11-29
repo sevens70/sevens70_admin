@@ -65,7 +65,7 @@ export const orderSlice = createSlice({
       })
       .addCase(fetchAllOrdersAsync.fulfilled, (state, action) => {
         state.status = "success";
-        state.orders = action.payload.orders;
+        state.orders = action.payload?.orders;
         state.totalOrders = action.payload.totalOrders;
       })
       .addCase(updateOrderAsync.pending, (state) => {
@@ -89,7 +89,7 @@ export const { resetOrder } = orderSlice.actions;
 
 export const selectCurrentOrder = (state) => state.order?.currentOrder;
 export const selectOrders = (state) => state.order?.orders;
-export const selectTotalOrders = (state) => state.order.totalOrders;
+export const selectTotalOrders = (state) => state.order?.totalOrders;
 export const selectStatus = (state) => state.order?.status;
 
 export default orderSlice.reducer;

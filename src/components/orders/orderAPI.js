@@ -1,67 +1,40 @@
+import axiosInstance from "../../lib/axiosInstance"; // Axios instance for centralized config
 import toast from "react-hot-toast";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_ENDPOINT;
-
-export function createOrder(order) {
-  return new Promise(async (resolve) => {
-    const token = sessionStorage.getItem("authToken");
-    const response = await fetch(`${BASE_URL}/orders`, {
-      method: "POST",
-      body: JSON.stringify(order),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
+export async function createOrder(order) {
+  try {
+    const response = await axiosInstance.post("/orders", order, {
+      withCredentials: true,
     });
-    const data = await response.json();
-    resolve({ data });
-  });
+    return { data: response.data };
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function updateOrder(order) {
-  const token = sessionStorage.getItem("authToken");
-  const response = await fetch(`${BASE_URL}/orders/${order.id}`, {
-    method: "PATCH",
-    body: JSON.stringify(order),
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    credentials: "include",
-  });
-
-  if (response.ok) {
+  try {
+    const response = await axiosInstance.patch(`/orders/${order.id}`, order, {
+      withCredentials: true,
+    });
     toast.success("Order updated successfully");
-    const data = await response.json();
-    return { data };
-  } else {
-    const errorText = await response.text();
+    return { data: response.data };
+  } catch (error) {
     toast.error("Failed to update order status");
-    throw new Error(errorText);
+    throw error;
   }
 }
-export function fetchAllOrders(sort, pagination) {
-  let queryString = "";
 
-  for (let key in sort) {
-    queryString += `${key}=${sort[key]}&`;
-  }
-  for (let key in pagination) {
-    queryString += `${key}=${pagination[key]}&`;
-  }
-
-  return new Promise(async (resolve) => {
-    const token = sessionStorage.getItem("authToken");
-    const response = await fetch(`${BASE_URL}/orders?${queryString}`, {
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+export async function fetchAllOrders(sort, pagination) {
+  try {
+    const params = { ...sort, ...pagination }; // Combine sort and pagination into query params
+    const response = await axiosInstance.get("/orders", {
+      params,
+      withCredentials: true,
     });
-    const data = await response.json();
-    const totalOrders = await response.headers.get("X-Total-Count");
-    resolve({ data: { orders: data, totalOrders: +totalOrders } });
-  });
+    const totalOrders = response.headers["x-total-count"];
+    return { data: { orders: response.data, totalOrders: +totalOrders } };
+  } catch (error) {
+    throw error;
+  }
 }

@@ -1,141 +1,72 @@
 import toast from "react-hot-toast";
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_ENDPOINT;
+import axiosInstance from "../../lib/axiosInstance";
 
 export async function createTopBanner(payload) {
-  const token = sessionStorage.getItem("authToken");
   try {
-    const response = await fetch(`${BASE_URL}/topbanner`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-      credentials: "include",
+    const response = await axiosInstance.post("/topbanner", payload, {
+      withCredentials: true,
     });
-
-    if (response.ok) {
-      const data = await response.json();
-      toast.success("Banner is created successfully.");
-      return { data };
-    } else {
-      const errorText = await response.text();
-      console.log("errortext", errorText);
-      toast.error("Failed to create banner.");
-      // throw new Error(errorText);
-    }
+    toast.success("Banner is created successfully.");
+    return { data: response.data };
   } catch (error) {
-    // console.error("Error in createWebsiteInfo:", error.message);
+    toast.error("Failed to create banner.");
     throw error;
   }
 }
 
-// export function fetchTopBanners() {
-//   const token = sessionStorage.getItem("authToken");
-//   return new Promise(async (resolve) => {
-//     const response = await fetch(`${BASE_URL}/topbanner`, {
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${token}`,
-//       },
-//       credentials: "include",
-//     });
-//     const data = await response.json();
-//     resolve({ data });
-//   });
-// }
-export function fetchTopBanners() {
-  const token = sessionStorage.getItem("authToken");
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await fetch(`${BASE_URL}/topbanner`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        reject(
-          `Request failed with status ${response.status}: ${errorMessage}`,
-        );
-        return;
-      }
-
-      const data = await response.json();
-      resolve({ data });
-    } catch (error) {
-      reject(`Fetch error: ${error.message}`);
-    }
-  });
-}
-
-export function deleteTopBanner(id) {
-  const token = sessionStorage.getItem("authToken");
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await fetch(`${BASE_URL}/topbanner/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        reject(errorData);
-      }
-
-      const data = await response.json();
-      resolve({ data });
-    } catch (err) {
-      reject({
-        message: "An error occurred while deleting the banner",
-        error: err,
-      });
-    }
-  });
-}
-
-export function fetchBrandById(id) {
-  const token = sessionStorage.getItem("authToken");
-  return new Promise(async (resolve) => {
-    const response = await fetch(`${BASE_URL}/brands/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-    });
-    const data = await response.json();
-    resolve({ data });
-  });
-}
-export async function updateBrand(update) {
-  const token = sessionStorage.getItem("authToken");
+export async function fetchTopBanners() {
   try {
-    const response = await fetch(`${BASE_URL}/brands/${update.id}`, {
-      method: "PATCH",
-      body: JSON.stringify(update),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
+    const response = await axiosInstance.get("/topbanner", {
+      withCredentials: true,
     });
-    if (response.ok) {
-      const data = await response.json();
-      toast.success("Brand Updated successfully");
-      return { data, status: response.status };
-    } else {
-      toast.error("Failed to update brand");
-    }
+    return { data: response.data };
   } catch (error) {
-    console.error("Error in update brand:", error);
+    console.error(
+      "Error fetching top banners:",
+      error.response?.data || error.message,
+    );
+    throw error;
+  }
+}
+
+export async function deleteTopBanner(id) {
+  try {
+    const response = await axiosInstance.delete(`/topbanner/${id}`, {
+      withCredentials: true,
+    });
+    return { data: response.data };
+  } catch (error) {
+    throw {
+      message: "An error occurred while deleting the banner",
+      error,
+    };
+  }
+}
+
+export async function fetchBrandById(id) {
+  try {
+    const response = await axiosInstance.get(`/brands/${id}`, {
+      withCredentials: true,
+    });
+    return { data: response.data };
+  } catch (error) {
+    console.error(
+      "Error fetching brand by ID:",
+      error.response?.data || error.message,
+    );
+    throw error;
+  }
+}
+
+export async function updateBrand(update) {
+  try {
+    const response = await axiosInstance.patch(`/brands/${update.id}`, update, {
+      withCredentials: true,
+    });
+    toast.success("Brand Updated successfully");
+    return { data: response.data, status: response.status };
+  } catch (error) {
+    toast.error("Failed to update brand.");
     throw error;
   }
 }
