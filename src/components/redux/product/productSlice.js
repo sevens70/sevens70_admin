@@ -2,13 +2,13 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   fetchAllProducts,
   fetchProductsByFilters,
-  fetchBrands,
+  // fetchBrands,
   fetchCategories,
   fetchProductById,
   createProduct,
   updateProduct,
   createSubCategories,
-  fetchAllCategories,
+  // fetchAllCategories,
 } from "./productAPI";
 import toast from "react-hot-toast";
 const initialState = {

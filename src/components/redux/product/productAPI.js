@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import axiosInstance from "../../../lib/axiosInstance";
 const BASE_URL = process.env.NEXT_PUBLIC_API_ENDPOINT;
 export const fetchProductById = async (id) => {
@@ -14,6 +15,30 @@ export const fetchAllProducts = async () => {
     const { data } = await axiosInstance.get("/products");
     return { data: { products: data } };
   } catch (error) {
+    throw error;
+  }
+};
+export const createProduct = async (product) => {
+  try {
+    const { data } = await axiosInstance.post("/products", product);
+    toast.success("Product created successfully");
+    return { data };
+  } catch (error) {
+    toast.error("Failed to create product");
+    throw error;
+  }
+};
+
+export const updateProduct = async (update) => {
+  try {
+    const { data, status } = await axiosInstance.patch(
+      `/products/${update.id}`,
+      update,
+    );
+    toast.success("Product updated successfully");
+    return { data, status };
+  } catch (error) {
+    toast.error("Failed to update product");
     throw error;
   }
 };
@@ -88,6 +113,16 @@ export const fetchCategories = async () => {
     throw error;
   }
 };
+export const fetchSubcategories = async (category) => {
+  try {
+    const { data } = await axiosInstance.get(
+      `/categories/get-subcategories/${category}`,
+    );
+    return { data };
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const createSubCategories = async (payload) => {
   try {
@@ -112,7 +147,12 @@ export const fetchBrands = async () => {
   }
 };
 
-// const BASE_URL = process.env.NEXT_PUBLIC_API_ENDPOINT;
+// import toast from "react-hot-toast";
+
+// const BASE_URL =
+//   process.env.NODE_ENV === "production"
+//     ? "https://xartso-server-xpr7.vercel.app"
+//     : "http://localhost:8080";
 
 // export function fetchProductById(id) {
 //   const token = sessionStorage.getItem("authToken");
@@ -162,6 +202,7 @@ export const fetchBrands = async () => {
 // export function createProduct(product) {
 //   const token = sessionStorage.getItem("authToken");
 //   return new Promise(async (resolve) => {
+//     console.log("12345", product);
 //     const response = await fetch(`${BASE_URL}/products`, {
 //       method: "POST",
 //       body: JSON.stringify(product),
@@ -171,14 +212,19 @@ export const fetchBrands = async () => {
 //       },
 //       credentials: "include",
 //     });
-//     const data = await response.json();
-//     resolve({ data });
+//     if (response.ok) {
+//       toast.success("Product created successfully");
+//       const data = await response.json();
+//       resolve({ data });
+//     } else {
+//       toast.error("Failed to create product");
+//     }
 //   });
 // }
 
-// export function updateProduct(update) {
+// export async function updateProduct(update) {
 //   const token = sessionStorage.getItem("authToken");
-//   return new Promise(async (resolve) => {
+//   try {
 //     const response = await fetch(`${BASE_URL}/products/${update.id}`, {
 //       method: "PATCH",
 //       body: JSON.stringify(update),
@@ -188,9 +234,17 @@ export const fetchBrands = async () => {
 //       },
 //       credentials: "include",
 //     });
-//     const data = await response.json();
-//     resolve({ data });
-//   });
+//     if (response.ok) {
+//       const data = await response.json();
+//       toast.success("Product Updated successfully");
+//       return { data, status: response.status };
+//     } else {
+//       toast.error("Failed to update product");
+//     }
+//   } catch (error) {
+//     console.error("Error in updateProduct:", error);
+//     throw error;
+//   }
 // }
 
 // export function fetchProductsByFilters(filter, sort, pagination, admin) {
@@ -239,10 +293,28 @@ export const fetchBrands = async () => {
 //     resolve({ data });
 //   });
 // }
+// export function fetchSubcategories(category) {
+//   const token = sessionStorage.getItem("authToken");
+//   return new Promise(async (resolve) => {
+//     const response = await fetch(
+//       `${BASE_URL}/categories/get-subcategories/${category}`,
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${token}`,
+//         },
+//         credentials: "include",
+//       },
+//     );
+//     const data = await response.json();
+//     resolve({ data });
+//   });
+// }
 
 // export function createSubCategories(payload) {
 //   const token = sessionStorage.getItem("authToken");
 //   return new Promise(async (resolve) => {
+//     console.log("12345", payload);
 //     const response = await fetch(`${BASE_URL}/categories/add-subcategory`, {
 //       method: "POST",
 //       body: JSON.stringify(payload),
@@ -252,21 +324,23 @@ export const fetchBrands = async () => {
 //       },
 //       credentials: "include",
 //     });
+//     console.log("response message 0122", response);
 //     const data = await response.json();
 //     resolve({ data });
 //   });
 // }
-// export function fetchBrands() {
-//   const token = sessionStorage.getItem("authToken");
-//   return new Promise(async (resolve) => {
-//     const response = await fetch(`${BASE_URL}/brands`, {
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${token}`,
-//       },
-//       credentials: "include",
-//     });
-//     const data = await response.json();
-//     resolve({ data });
-//   });
-// }
+
+// // export function fetchBrands() {
+// //   const token = sessionStorage.getItem("authToken");
+// //   return new Promise(async (resolve) => {
+// //     const response = await fetch(`${BASE_URL}/brands`, {
+// //       headers: {
+// //         "Content-Type": "application/json",
+// //         Authorization: `Bearer ${token}`,
+// //       },
+// //       credentials: "include",
+// //     });
+// //     const data = await response.json();
+// //     resolve({ data });
+// //   });
+// // }
