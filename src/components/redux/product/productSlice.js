@@ -139,7 +139,7 @@ export const productSlice = createSlice({
         state.subCategories = action.payload?.category;
       })
       .addCase(fetchProductByIdAsync.pending, (state) => {
-        state.status = "loading...";
+        state.status = "loading";
       })
       .addCase(fetchProductByIdAsync.fulfilled, (state, action) => {
         state.status = "idle";

@@ -1,62 +1,36 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_ENDPOINT;
+import axiosInstance from "../../lib/axiosInstance";
 
-export function fetchLoggedInUserOrders() {
-  const token = sessionStorage.getItem("authToken");
-  return new Promise(async (resolve) => {
-    const response = await fetch(`${BASE_URL}/orders/own/`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-    });
-    const data = await response.json();
-    resolve({ data });
-  });
-}
+export const fetchLoggedInUserOrders = async () => {
+  try {
+    const { data } = await axiosInstance.get("/orders/own");
+    return { data };
+  } catch (error) {
+    throw error;
+  }
+};
 
-export function fetchLoggedInUser() {
-  const token = sessionStorage.getItem("authToken");
-  return new Promise(async (resolve) => {
-    const response = await fetch(`${BASE_URL}/users/own`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-    });
-    const data = await response.json();
-    resolve({ data });
-  });
-}
-export function fetchAllUsers() {
-  const token = sessionStorage.getItem("authToken");
-  return new Promise(async (resolve) => {
-    const response = await fetch(`${BASE_URL}/users`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-    });
-    const data = await response.json();
-    resolve({ data });
-  });
-}
+export const fetchLoggedInUser = async () => {
+  try {
+    const { data } = await axiosInstance.get("/users/own");
+    return { data };
+  } catch (error) {
+    throw error;
+  }
+};
+export const fetchAllUsers = async () => {
+  try {
+    const { data } = await axiosInstance.get("/users");
+    return { data };
+  } catch (error) {
+    throw error;
+  }
+};
 
-export function updateUser(update) {
-  const token = sessionStorage.getItem("authToken");
-  return new Promise(async (resolve) => {
-    const response = await fetch(`${BASE_URL}/users/${update.id}`, {
-      method: "PATCH",
-      body: JSON.stringify(update),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-    });
-    const data = await response.json();
-    resolve({ data });
-  });
-}
+export const updateUser = async (update) => {
+  try {
+    const { data } = await axiosInstance.patch(`/users/${update.id}`, update);
+    return { data };
+  } catch (error) {
+    throw error;
+  }
+};

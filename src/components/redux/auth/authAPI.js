@@ -1,135 +1,72 @@
+import axiosInstance from "../../../lib/axiosInstance";
 import toast from "react-hot-toast";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_ENDPOINT;
-
-export function createUser(userData) {
-  console.log("1237 data userData", userData);
-  return new Promise(async (resolve) => {
-    const response = await fetch(`${BASE_URL}/auth/signup`, {
-      method: "POST",
-      body: JSON.stringify(userData),
-      headers: { "content-type": "application/json" },
-      credentials: "include",
+export async function createUser(userData) {
+  try {
+    const response = await axiosInstance.post("/auth/signup", userData, {
+      withCredentials: true,
     });
-    if (response.ok) {
-      const data = await response.json();
-      resolve({ data });
-    } else {
-      toast.error("Failed to create account");
-    }
-  });
+    return { data: response.data };
+  } catch (error) {
+    toast.error("Failed to create account");
+    throw error;
+  }
 }
 
-export function loginUser(loginInfo) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await fetch(`${BASE_URL}/auth/login`, {
-        method: "POST",
-        body: JSON.stringify(loginInfo),
-        headers: { "content-type": "application/json" },
-        credentials: "include",
-      });
-      if (response.ok) {
-        const data = await response.json();
-        resolve({ data });
-      } else {
-        const error = await response.text();
-        toast.error("Wrong credentials, check again.");
-        reject(error);
-      }
-    } catch (error) {
-      reject(error);
-    }
-  });
+export async function loginUser(loginInfo) {
+  try {
+    const response = await axiosInstance.post("/auth/login", loginInfo, {
+      withCredentials: true,
+    });
+    return { data: response.data };
+  } catch (error) {
+    toast.error("Wrong credentials, check again.");
+    throw error;
+  }
 }
 
-export function checkAuth() {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const token = sessionStorage.getItem("authToken");
-
-      const response = await fetch(`${BASE_URL}/auth/check`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        resolve({ data });
-      } else {
-        const error = await response.text();
-        reject(error);
-      }
-    } catch (error) {
-      reject(error);
-    }
-  });
+export async function checkAuth() {
+  try {
+    const response = await axiosInstance.get("/auth/check", {
+      withCredentials: true,
+    });
+    return { data: response.data };
+  } catch (error) {
+    throw error;
+  }
 }
 
-export function signOut() {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await fetch(`${BASE_URL}/auth/logout`, {
-        method: "GET",
-        credentials: "include",
-      });
-      if (response.ok) {
-        resolve({ data: "success" });
-      } else {
-        const error = await response.text();
-        reject(error);
-      }
-    } catch (error) {
-      console.log(error);
-      reject(error);
-    }
-  });
+export async function signOut() {
+  try {
+    const response = await axiosInstance.get("/auth/logout", {
+      withCredentials: true,
+    });
+    return { data: "success" };
+  } catch (error) {
+    throw error;
+  }
 }
 
-export function resetPasswordRequest(email) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await fetch(`${BASE_URL}/auth/reset-password-request`, {
-        method: "POST",
-        body: JSON.stringify({ email }),
-        headers: { "content-type": "application/json" },
-        credentials: "include",
-      });
-      if (response.ok) {
-        const data = await response.json();
-        resolve({ data });
-      } else {
-        const error = await response.text();
-        reject(error);
-      }
-    } catch (error) {
-      reject(error);
-    }
-  });
+export async function resetPasswordRequest(email) {
+  try {
+    const response = await axiosInstance.post(
+      "/auth/reset-password-request",
+      { email },
+      { withCredentials: true },
+    );
+    return { data: response.data };
+  } catch (error) {
+    throw error;
+  }
 }
 
-export function resetPassword(data) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await fetch(`${BASE_URL}/auth/reset-password`, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "content-type": "application/json" },
-        credentials: "include",
-      });
-      if (response.ok) {
-        const data = await response.json();
-        resolve({ data });
-      } else {
-        const error = await response.text();
-        reject(error);
-      }
-    } catch (error) {
-      reject(error);
-    }
-  });
+export async function resetPassword(data) {
+  try {
+    const response = await axiosInstance.post("/auth/reset-password", data, {
+      withCredentials: true,
+    });
+    return { data: response.data };
+  } catch (error) {
+    throw error;
+  }
 }

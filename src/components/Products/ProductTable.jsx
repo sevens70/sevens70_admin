@@ -102,7 +102,7 @@ const ProductTable = () => {
               </div>
               <div className="col-span-1 flex items-center">
                 <p className="text-sm capitalize text-black dark:text-white">
-                  {product.brand}
+                  {product.brand?.length > 0 ? product.brand : "No brand"}
                 </p>
               </div>
               <div className="col-span-1 flex items-center">

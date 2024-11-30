@@ -9,6 +9,7 @@ import {
   // fetchCategoriesAsync,
   fetchProductByIdAsync,
   selectProductById,
+  selectProductListStatus,
   selectProductStatus,
   updateProductAsync,
 } from "../../redux/product/productSlice.js";
@@ -22,6 +23,7 @@ import {
   allBrands,
   fetchBrandsAsync,
 } from "@/components/brands/brandsSlice.js";
+import Loader from "../../common/Loader";
 
 function ProductForm({ title }) {
   const {
@@ -36,6 +38,7 @@ function ProductForm({ title }) {
   const params = useParams();
   const selectedProduct = useSelector(selectProductById);
   const selectedProductStatus = useSelector(selectProductStatus);
+  const status = useSelector(selectProductListStatus);
   const brandList = useSelector(allBrands);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [imgLoader, setImgLoader] = useState(false);
@@ -160,7 +163,7 @@ function ProductForm({ title }) {
       setValue("image1", selectedProduct.images[0]);
       setValue("image2", selectedProduct.images[1]);
       setValue("image3", selectedProduct.images[2]);
-      setValue("brand", selectedProduct.brand);
+      setValue("brand", selectedProduct.brand ?? "");
       setValue("sku", selectedProduct.sku);
       setValue("type", selectedProduct.type);
       setValue("category", selectedProduct.category);
@@ -295,6 +298,9 @@ function ProductForm({ title }) {
 
   // console.log("brandslist 000", brandList);
   const brands = brandList?.map((sub) => sub.name);
+  if (status === "loading") {
+    return <Loader />;
+  }
 
   return (
     <>
@@ -329,7 +335,6 @@ function ProductForm({ title }) {
           if (params.id) {
             product.id = params.id;
             product.rating = selectedProduct.rating || 0;
-            console.log("product 00000000000000000", product);
             dispatch(updateProductAsync(product));
             router.push("/products");
           } else {
@@ -406,12 +411,13 @@ function ProductForm({ title }) {
                   htmlFor="brand"
                   className="text-gray-900 block text-sm font-medium leading-6"
                 >
-                  Brand <span className="text-red">*</span>
+                  Brand
+                  {/* <span className="text-red">*</span> */}
                 </label>
                 <div className="mt-2">
                   <select
                     {...register("brand", {
-                      required: "brand is required",
+                      // required: "brand is required",
                     })}
                     className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 capitalize outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   >
@@ -423,9 +429,9 @@ function ProductForm({ title }) {
                     ))}
                   </select>
                 </div>
-                {errors.brand && (
+                {/* {errors.brand && (
                   <p className="text-red">{errors.brand.message}</p>
-                )}
+                )} */}
               </div>
               <div className="sm:col-span-6">
                 <label
